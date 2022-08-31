@@ -1,0 +1,88 @@
+<!-- This file describes every dependency that we need to download to build libjitsi. -->
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra" >
+    <info organisation="Metaswitch" module="Main" />
+    <configurations>
+        <!-- Dependencies needing ivy:retrieve to specific download locations -->
+        <conf name="buildtools" /> <!-- buildtools downloads to buildtools -->
+        <conf name="lib" /> <!-- lib conf downloads to libjitsi/lib. -->
+        <conf name="nativemac" /> <!-- nativemac conf downloads to libjitsi/lib/native/mac. -->
+        <!-- Scopes -->
+        <conf name="runtime" />
+    </configurations>
+    <dependencies defaultconfmapping="lib->default">
+
+        <!--
+            **************************************************************************
+            * remote-repos dependencies                                              *
+            **************************************************************************
+        -->
+
+        <dependency org="ant-contrib" name="ant-contrib" rev="1.0b3" conf="buildtools->default" >
+            <!-- Provides ant-contrib.jar and transitive dependency ant.jar in buildtools -->
+        </dependency>
+        <dependency org="ant-contrib" name="cpptasks" rev="1.0b5" conf="buildtools->default" >
+            <!-- Provides cpptasks.jar and transitive dependencies ant.jar and xercesImpl.jar in buildtools -->
+        </dependency>
+
+        <dependency org="org.osgi" name="osgi.core" rev="8.0.0" conf="runtime,lib->default">
+            <!-- Provides osgi.core.jar in libjitsi/lib -->
+        </dependency>
+
+        <dependency name="fmj" rev="sw6-no-jpeg" conf="runtime,lib->default" >
+            <!-- Provides fmj.jar in libjitsi/lib -->
+        </dependency>
+
+        <!-- From https://sourceforge.net/projects/jspeex/ -->
+        <dependency name="jspeex" rev="0.9.7" conf="runtime,lib->default">
+            <artifact name="jspeex" type="java" ext="jar" />
+        </dependency>
+
+        <dependency org="org.bytedeco" name="ffmpeg" rev="4.4-1.5.6" conf="runtime,lib->default" >
+            <!-- Provides ffmpeg.jar and its transitive dependency javacpp.jar in libjitsi/lib -->
+        </dependency>
+
+        <dependency name="jain-sip-ri" rev="1.2.1115"  conf="runtime,lib->default">
+            <!-- we rolled jain-sdp.jar into jain-sip-ri.jar (just like upstream) so there will be only one jar -->
+            <artifact name="jain-sip-ri" type="jar" ext="jar"/>
+        </dependency>
+
+        <dependency org="org.bouncycastle" name="bcpkix-jdk15on" rev="1.69" conf="runtime,lib->default" >
+            <!-- Provides bcpkix-jdk15on.jar and transitive dependency bcprov-jdk15on.jar in libjitsi/lib -->
+        </dependency>
+
+        <dependency org="ch.imvs" name="sdes4j" rev="1.1.5" conf="runtime,lib->default" >
+            <!-- Provides sdes4j.jar in libjitsi/lib -->
+        </dependency>
+
+        <dependency org="org.apache.commons" name="commons-math3" rev="3.6.1" conf="runtime,lib->default" >
+            <!-- Provides commons-math3.jar in libjitsi/lib -->
+        </dependency>
+
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.12.0" conf="runtime,lib->default" >
+            <!-- Provides commons-lang3.jar in libjitsi/lib -->
+        </dependency>
+
+        <dependency org="com.googlecode.json-simple" name="json-simple" rev="1.1.1" conf="runtime,lib->default" transitive="false" >
+            <!-- Provides json-simple.jar in libjitsi/lib.
+            transitive="false" to exclude junit, which json-simple's POM file erroneously declares as a compile dependency. -->
+        </dependency>
+
+        <dependency org="com.google.guava" name="guava" rev="31.0.1-jre" conf="runtime,lib->default" transitive="false" >
+        <!-- Provides guava.jar in libjitsi/lib. -->
+    </dependency>
+
+        <!--
+            **************************************************************************
+            * custom dependencies                                                 *
+            **************************************************************************
+        -->
+
+        <!-- These are custom-built or non-Maven dependencies -->
+
+        <!-- Built by jitsi/src/native/build.xml target "webrtc-aec" -->
+        <dependency name="libjnwebrtc" rev="1.0" conf="nativemac->default">
+            <artifact name="libjnwebrtcaec" type="native" ext="a" />
+            <artifact name="libjnwebrtc" type="native" ext="a" />
+        </dependency>
+    </dependencies>
+</ivy-module>

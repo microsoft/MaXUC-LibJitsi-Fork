@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="libjitsi" xmlns:jacoco="antlib:org.jacoco.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <!-- Java version to use.  We use the same version for everything. -->
+    <property name="javac.source" value="11"/>
+    <property name="javac.target" value="11"/>
+
+    <dirname property="lj.basedir" file="${ant.file.libjitsi}"/>
+    <property name="project.basedir" value="${lj.basedir}/"/> <!-- When invoked from jitsi/build.xml, this property is already set. -->
+    <property file="local.properties" />
+    <property name="libjitsi.dest" value="${lj.basedir}/classes" />
+    <property name="libjitsi.testdest" value="${lj.basedir}/testclasses" />
+    <property name="dist" value="${lj.basedir}/dist" />
+    <property name="libjitsi.jar" value="${lj.basedir}/libjitsi.jar"/>
+    <property name="libjitsi.src" value="${lj.basedir}/src"/>
+    <property name="libjitsi.testsrc" value="${lj.basedir}/test"/>
+    <property name="native.libs" value="${lj.basedir}/lib/native"/>
+    <property environment="system"/>
+
+    <!-- Code coverage configuration -->
+    <property name='libjitsi.jacoco.enabled' value='true' />
+    <property name='libjitsi.jacoco.destfile' value='libjitsi.jacoco.exec' />
+
+    <include file="${project.basedir}/buildtools.xml" />
+
+    <target name="-init-paths" depends="buildtools.get-build-dependencies" >
+        <path id="libjitsi.compile.class.path">
+            <fileset dir="${lj.basedir}/lib" includes="*.jar" />
+        </path>
+
+        <path id="libjitsi.test.class.path">
+            <!-- jmockit.jar first: https://github.com/jmockit/jmockit1/issues/125#issuecomment-70128894 -->
+            <pathelement location="${project.basedir}/buildtools/jmockit.jar" />
+            <pathelement location="${project.basedir}/buildtools/junit.jar" />
+            <pathelement location="${project.basedir}/buildtools/hamcrest-all.jar" />
+            <path refid="libjitsi.compile.class.path" />
+            <pathelement location="${libjitsi.dest}" />
+            <pathelement location="${libjitsi.testdest}" />
+        </path>
+    </target>
+
+    <condition property="libjitsi.build.label"
+               value="-${label}"
+               else="">
+        <isset property="label"/>
+    </condition>
+
+    <!-- Import JNI build xml -->
+    <import file="${libjitsi.src}/native/build.xml"/>
+
+    <target
+            name="clean"
+            description="Remove all compiled/generated files and prepare for a clean compile/build.">
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset file="${libjitsi.jar}" />
+            <fileset dir="${libjitsi.dest}" />
+            <fileset dir="${libjitsi.testdest}" />
+            <fileset dir="${dist}" />
+        </delete>
+    </target>
+
+    <condition property="skip-resolve-libjitsi-dependencies">
+        <or>
+            <istrue value="${resolve-libjitsi-dependencies-done}" />
+            <istrue value="${offlineBuild}" />
+        </or>
+    </condition>
+
+    <target name="resolve-dependencies" description="Get our dependencies." depends="buildtools.init-ivy" unless="skip-resolve-libjitsi-dependencies" >
+        <ivy:settings file="${project.basedir}/ivysettings.xml" />
+        <ivy:resolve file="${lj.basedir}/ivy.xml" transitive="true" conf="lib,runtime"/>
+        <ivy:retrieve conf="lib" pattern="${lj.basedir}/lib/[artifact].[ext]" overwriteMode="different" />
+        <property name="resolve-libjitsi-dependencies-done" value="true" />
+    </target>
+
+    <target name="resolve-native-dependencies" description="Get our native dependencies." depends="buildtools.init-ivy" unless="skip-resolve-libjitsi-dependencies" >
+        <ivy:settings file="${project.basedir}/ivysettings.xml" />
+        <ivy:resolve file="${lj.basedir}/ivy.xml" transitive="true" />
+        <ivy:retrieve conf="nativemac" pattern="${lj.basedir}/lib/native/mac/[artifact].[ext]" overwriteMode="different"/>
+    </target>
+
+    <target name="compile" depends="-init-paths">
+        <mkdir dir="${libjitsi.dest}" />
+        <javac
+            classpathref="libjitsi.compile.class.path"
+            debug="true"
+            destdir="${libjitsi.dest}"
+            fork="true"
+            optimize="true"
+            source="${javac.source}"
+            target="${javac.target}"
+            includeantruntime="false" >
+            <src path="${libjitsi.src}" />
+            <exclude name="org/jitsi/impl/neomedia/codec/audio/speex/Java*"/>
+        </javac>
+    </target>
+
+    <target name="compile-tests" depends="compile">
+        <mkdir dir="${libjitsi.testdest}" />
+        <javac
+            classpathref="libjitsi.test.class.path"
+            debug="true"
+            destdir="${libjitsi.testdest}"
+            fork="true"
+            optimize="true"
+            source="${javac.source}"
+            target="${javac.target}"
+            includeantruntime="false" >
+            <src path="${libjitsi.testsrc}" />
+        </javac>
+    </target>
+
+    <target name="compile-with-g729">
+        <replace
+                file="${libjitsi.src}/org/jitsi/impl/neomedia/codec/EncodingConfigurationImpl.java"
+                token="public static final boolean G729 = false"
+                value="public static final boolean G729 = true"/>
+        <antcall target="compile" />
+        <replace
+                file="${libjitsi.src}/org/jitsi/impl/neomedia/codec/EncodingConfigurationImpl.java"
+                token="public static final boolean G729 = true"
+                value="public static final boolean G729 = false"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar
+                compress="true"
+                destfile="${libjitsi.jar}">
+            <fileset casesensitive="no" dir="${libjitsi.dest}">
+                <include name="**/*.class" />
+                <include name="**/*.properties" />
+                <exclude name="**/Test*.class" />
+                <exclude name="${libjitsi.dest}/libjitsi.jar" />
+            </fileset>
+        </jar>
+    </target>
+
+    <target
+            name="make"
+            depends="resolve-dependencies,compile,jar"
+            description="Incrementally compile and jar/package the project." />
+
+    <target
+            name="make-with-g729"
+            depends="resolve-dependencies,compile-with-g729,jar"
+            description="Incrementally compile and jar/package the project including support for the G.729 audio codec." />
+
+    <target
+            name="rebuild"
+            depends="clean,make"
+            description="Clean and make the project." />
+
+    <target name="test" depends="-init-paths,resolve-dependencies,buildtools.init-jacoco" >
+        <!-- First, build a .jar which just contains the required classpath to run the tests. This means that we can
+        pass the path to the jar as an argument to the Junit invocation, which works around a problem where the classpath
+        was so long that the junit command couldn't be run on Windows. This is a suggested workaround by ant, see here:
+        https://ant.apache.org/manual/Tasks/manifestclasspath.html -->
+
+        <manifestclasspath property="libjitsi_jar.classpath" jarfile="libjitsiUTClasspath.jar" maxParentLevels="15">
+            <classpath refid="libjitsi.test.class.path"/>
+        </manifestclasspath>
+
+        <jar destfile="libjitsiUTClasspath.jar">
+            <manifest>
+                <attribute name="Class-Path" value="${libjitsi_jar.classpath}"/>
+            </manifest>
+        </jar>
+
+        <trycatch property="errorMessage">
+            <try>
+                <jacoco:coverage enabled="${jacoco.enabled}" destfile="${jacoco.destfile}" >
+                <!-- Parallelise the UTs. I went for 4 threads because most of the PCs they will run on have 4
+                 cores. Even when virtualisation means there are 8 logical processors, there doesn't seem to
+                 be much of a speed increase from using 8 threads, and not every PC will have virtualisation. -->
+                    <junit haltonfailure="false" fork="true" failureproperty="failed-unit-tests" threads="4">
+                        <formatter type="brief" usefile="false"/>
+                        <formatter type="xml" />
+
+                        <classpath>
+                            <pathelement location="libjitsiUTClasspath.jar"/>
+                        </classpath>
+
+                        <batchtest fork="yes" todir="${test.reports.dir}">
+                            <fileset dir="${libjitsi.testsrc}">
+                                <include name="**/${test.match}.java" />
+                            </fileset>
+                        </batchtest>
+
+                        <jvmarg value="-noverify"/>
+                        <jvmarg value="-Djdk.attach.allowAttachSelf=true"/>
+                    </junit>
+                </jacoco:coverage>
+            </try>
+            <catch>
+                <fail>${errorMessage}
+                    Junit hit an error while setting up the tests - see the output above
+                </fail>
+            </catch>
+        </trycatch>
+    </target>
+</project>

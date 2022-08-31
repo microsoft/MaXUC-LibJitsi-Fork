@@ -1,0 +1,55 @@
+<project name="buildtools" xmlns:ivy="antlib:org.apache.ivy.ant" >
+    <dirname property="project.basedir" file="${ant.file.buildtools}" />
+    <property name="ivy.version" value="2.5.0" />
+    <property name="ivy.dir" value="${project.basedir}/buildtools" />
+
+    <target name="init-ivy" unless="${offlineBuild}" >
+        <mkdir dir="${ivy.dir}" />
+    </target>
+
+    <condition property="skip-get-build-dependencies">
+        <or>
+            <istrue value="${get-build-dependencies-done}" />
+            <istrue value="${offlineBuild}" />
+        </or>
+    </condition>
+
+    <target name="get-build-dependencies" description="Get build-time dependencies" unless="skip-get-build-dependencies" depends="init-ivy" >
+        <!-- This target downloads the build-time tools only.  The runtime libraries are downloaded by abstract-brand-build.xml, jitsi/build.xml, and libjitsi/build.xml -->
+        <ivy:settings file="${project.basedir}/../ivysettings.xml" />
+        <ivy:resolve file="${project.basedir}/ivy.xml" transitive="true" conf="buildtools" />
+        <mkdir dir="${project.basedir}/buildtools" />
+        <ivy:retrieve conf="buildtools" pattern="${project.basedir}/buildtools/[artifact](-[classifier]).[ext]" overwriteMode="different" />
+        <property name="get-build-dependencies-done" value="true" />
+    </target>
+
+    <!-- Define ant-contrib tasks e.g. <if> -->
+    <target name="init-ant-contrib" depends="get-build-dependencies" >
+        <taskdef resource="net/sf/antcontrib/antlib.xml" >
+            <classpath>
+                <pathelement location="${project.basedir}/buildtools/ant-contrib.jar" />
+            </classpath>
+        </taskdef>
+    </target>
+
+    <!-- Define cpptasks tasks e.g. <cc> -->
+    <target name="init-cpptasks" depends="get-build-dependencies" >
+        <taskdef resource="cpptasks.tasks">
+            <classpath>
+                <pathelement location="${project.basedir}/buildtools/cpptasks.jar" />
+                <pathelement location="${project.basedir}/buildtools/xercesImpl.jar" />
+            </classpath>
+        </taskdef>
+    </target>
+
+    <!-- Define jacoco task <jacoco:coverage> -->
+    <target name="init-jacoco" depends="get-build-dependencies" >
+        <path id="jacoco.class.path" >
+            <fileset dir="${project.basedir}/buildtools" >
+                <include name="org.jacoco*.jar" />
+                <include name="asm*.jar" />
+            </fileset>
+        </path>
+        <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="jacoco.class.path" />
+    </target>
+</project>
