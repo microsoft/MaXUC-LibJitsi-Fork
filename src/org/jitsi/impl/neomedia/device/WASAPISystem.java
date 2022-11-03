@@ -1189,6 +1189,8 @@ public class WASAPISystem
             MoDeleteMediaType(pmt);
         }
 
+        sLog.info("Found " + supportedFormats.size() + " supported formats");
+
         return supportedFormats;
     }
 
@@ -1490,10 +1492,12 @@ public class WASAPISystem
         {
             if (iPropertyStore != 0)
             {
+                sLog.warn("Unused iPropertyStore " + iPropertyStore + " - free it");
                 IPropertyStore_Release(iPropertyStore);
             }
             if (iMediaObject != 0)
             {
+                sLog.warn("Unused iMediaObject " + iMediaObject + " - free it");
                 IMediaObject_Release(iMediaObject);
             }
         }
@@ -1634,6 +1638,7 @@ public class WASAPISystem
                             {
                                 // This happens for an unknown reason for some headsets or speakers, possibly a WASAPI
                                 // bug. Skip to the next stream format.
+                                sLog.debug("Ignore format " + i + " which returned E_INVALIDARG");
                                 continue;
                             }
                             else
@@ -1857,6 +1862,7 @@ public class WASAPISystem
             {
                 if (iMediaObject != 0)
                 {
+                    sLog.warn("Unused iMediaObject " + iMediaObject + " - free it");
                     IMediaObject_Release(iMediaObject);
                 }
             }
@@ -1887,6 +1893,7 @@ public class WASAPISystem
         {
             if (aecIMediaObject != 0)
             {
+                sLog.debug("Release iMediaObject " + aecIMediaObject);
                 IMediaObject_Release(aecIMediaObject);
                 aecIMediaObject = 0;
             }
