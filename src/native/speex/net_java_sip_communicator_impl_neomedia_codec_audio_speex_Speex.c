@@ -4,7 +4,8 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
-#include "org_jitsi_impl_neomedia_codec_audio_speex_Speex.h"
+// Portions (c) Microsoft Corporation. All rights reserved.
+#include "net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex.h"
 
 #include <speex/speex.h>
 #include <speex/speex_resampler.h>
@@ -12,7 +13,7 @@
 #include <stdlib.h>
 
 JNIEXPORT void JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1destroy
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1destroy
     (JNIEnv *jniEnv, jclass clazz, jlong bits)
 {
     SpeexBits *bitsPtr = (SpeexBits *) (intptr_t) bits;
@@ -22,7 +23,7 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1destroy
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1init
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1init
     (JNIEnv *jniEnv, jclass clazz)
 {
     SpeexBits *bits = malloc(sizeof(SpeexBits));
@@ -33,14 +34,14 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1init
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1nbytes
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1nbytes
     (JNIEnv *jniEnv, jclass clazz, jlong bits)
 {
     return speex_bits_nbytes((SpeexBits *) (intptr_t) bits);
 }
 
 JNIEXPORT void JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1read_1from
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1read_1from
     (JNIEnv *jniEnv, jclass clazz,
     jlong bits, jbyteArray bytes, jint bytesOffset, jint len)
 {
@@ -61,21 +62,21 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1read_1from
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1remaining
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1remaining
     (JNIEnv *jniEnv, jclass clazz, jlong bits)
 {
     return speex_bits_remaining((SpeexBits *) (intptr_t) bits);
 }
 
 JNIEXPORT void JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1reset
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1reset
     (JNIEnv *jniEnv, jclass clazz, jlong bits)
 {
     speex_bits_reset((SpeexBits *) (intptr_t) bits);
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1write
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1write
     (JNIEnv *jniEnv, jclass clazz,
     jlong bits, jbyteArray bytes, jint bytesOffset, jint max_len)
 {
@@ -97,7 +98,7 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1bits_1write
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1decode_1int
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1decode_1int
     (JNIEnv *jniEnv, jclass clazz,
     jlong state, jlong bits, jbyteArray out, jint outOffset)
 {
@@ -119,7 +120,7 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1decode_1int
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1decoder_1ctl__JI
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1decoder_1ctl__JI
     (JNIEnv *jniEnv, jclass clazz, jlong state, jint request)
 {
     int ret;
@@ -132,28 +133,28 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1decoder_1ctl__JI
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1decoder_1ctl__JII
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1decoder_1ctl__JII
     (JNIEnv *jniEnv, jclass clazz, jlong state, jint request, jint value)
 {
     return speex_decoder_ctl((void *) (intptr_t) state, request, &value);
 }
 
 JNIEXPORT void JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1decoder_1destroy
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1decoder_1destroy
     (JNIEnv *jniEnv, jclass clazz, jlong state)
 {
     speex_decoder_destroy((void *) (intptr_t) state);
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1decoder_1init
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1decoder_1init
     (JNIEnv *jniEnv, jclass clazz, jlong mode)
 {
     return (jlong)  (intptr_t) speex_decoder_init((SpeexMode *) (intptr_t) mode);
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1encode_1int
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1encode_1int
     (JNIEnv *jniEnv, jclass clazz,
     jlong state, jbyteArray in, jint inOffset, jlong bits)
 {
@@ -175,7 +176,7 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1encode_1int
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1encoder_1ctl__JI
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1encoder_1ctl__JI
     (JNIEnv *jniEnv, jclass clazz, jlong state, jint request)
 {
     int ret;
@@ -188,42 +189,42 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1encoder_1ctl__JI
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1encoder_1ctl__JII
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1encoder_1ctl__JII
     (JNIEnv *jniEnv, jclass clazz, jlong state, jint request, jint value)
 {
     return speex_encoder_ctl((void *) (intptr_t) state, request, &value);
 }
 
 JNIEXPORT void JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1encoder_1destroy
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1encoder_1destroy
     (JNIEnv *jniEnv, jclass clazz, jlong state)
 {
     speex_encoder_destroy((void *) (intptr_t) state);
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1encoder_1init
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1encoder_1init
     (JNIEnv *jniEnv, jclass clazz, jlong mode)
 {
     return (jlong) (intptr_t) speex_encoder_init((SpeexMode *) (intptr_t) mode);
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1lib_1get_1mode
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1lib_1get_1mode
     (JNIEnv *jniEnv, jclass clazz, jint mode)
 {
     return (jlong) (intptr_t) speex_lib_get_mode(mode);
 }
 
 JNIEXPORT void JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1destroy
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1destroy
     (JNIEnv *jniENv, jclass clazz, jlong state)
 {
     speex_resampler_destroy((SpeexResamplerState *) (intptr_t) state);
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1init
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1init
     (JNIEnv *jniEnv, jclass clazz,
     jint nb_channels, jint in_rate, jint out_rate, jint quality, jlong err)
 {
@@ -238,7 +239,7 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1init
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1process_1interleaved_1int
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1process_1interleaved_1int
     (JNIEnv *jniEnv, jclass clazz,
     jlong state,
     jbyteArray in, jint inOffset, jint in_len,
@@ -282,7 +283,7 @@ Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1process_1
 }
 
 JNIEXPORT jint JNICALL
-Java_org_jitsi_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1set_1rate
+Java_net_java_sip_communicator_impl_neomedia_codec_audio_speex_Speex_speex_1resampler_1set_1rate
     (JNIEnv *jniEnv, jclass clazz, jlong state, jint in_rate, jint out_rate)
 {
     return

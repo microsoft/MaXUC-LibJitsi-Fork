@@ -5,7 +5,7 @@
  * See terms of license at gnu.org.
  *
  * Some of the code in this class is derived from ccRtp's SRTP implementation,
- * which has the following copyright notice:
+ * CryptoContext.cxx and CryptoContext.h, which has the following copyright notice:
  *
   Copyright (C) 2004-2006 the Minisip Team
 

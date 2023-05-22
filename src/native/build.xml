@@ -1,8 +1,9 @@
+<!-- Portions (c) Microsoft Corporation. All rights reserved. -->
 <project name="libjitsi-native" default="help-native">
   <dirname property="ljn.basedir" file="${ant.file.libjitsi-native}"/>
   <include file="${ljn.basedir}/../../build.xml" as="libjitsi"/>
 
-  <property name="native.install" value="${project.basedir}/lib/native"/>
+  <property name="native.libs" value="${project.basedir}/lib/native"/>
 
   <!-- additional properties -->
   <property name="src" value="${ljn.basedir}/.." />
@@ -47,6 +48,12 @@
     </and>
   </condition>
 
+  <condition property="is.release">
+    <not>
+      <isset property="debug" />
+    </not>
+  </condition>
+
   <!--
     Cross compilation. It is mainly used on Linux to cross-compile 32-bit
     binaries on a 64-bit host.
@@ -65,14 +72,14 @@
   </condition>
 
   <!-- initialize destination directory -->
-  <condition property="native_install_dir" value="${native.install}/windows">
+  <condition property="native_install_dir" value="${native.libs}/windows">
     <and>
       <isset property="is.running.windows"/>
       <equals arg1="${arch}" arg2="32" />
     </and>
   </condition>
 
-  <condition property="native_install_dir" value="${native.install}/windows-64">
+  <condition property="native_install_dir" value="${native.libs}/windows-64">
     <and>
       <isset property="is.running.windows"/>
       <equals arg1="${arch}" arg2="64" />
@@ -83,12 +90,11 @@
     <isset property="is.running.macos"/>
   </condition>
 
-  <condition property="native_install_dir" value="${native.install}/mac">
+  <condition property="native_install_dir" value="${native.libs}/mac">
     <isset property="is.running.macos"/>
   </condition>
 
   <!--
-  <echo message="speex library: ${speex}" />
   <echo message="Install directory ${native_install_dir}" />
   <echo message="arch: ${arch}" />
   <echo message="src: ${src}" />
@@ -102,69 +108,8 @@
     <mkdir dir="${native_install_dir}" />
   </target>
 
-  <!-- compile jnscreencapture library -->
-  <target name="screencapture" description="Build screencapture shared library"
-    depends="init-native">
-    <cc outtype="shared" name="gcc" outfile="${native_install_dir}/jnscreencapture" objdir="${obj}">
-      <!-- common compiler flags -->
-      <compilerarg value="-std=c99" />
-      <compilerarg value="-D_XOPEN_SOURCE=600" />
-      <compilerarg value="-Wall" />
-      <compilerarg value="-Wextra" />
-      <compilerarg value="-O3" />
-
-      <!-- Linux specific flags -->
-      <compilerarg value="-m32" if="cross_32" unless="is.running.macos" />
-      <compilerarg value="-m64" if="cross_64" unless="is.running.macos" />
-      <compilerarg value="-I${system.JAVA_HOME}/include" if="is.running.linux" />
-      <compilerarg value="-I${system.JAVA_HOME}/include/linux" if="is.running.linux" />
-
-      <linkerarg value="-m32" if="cross_32" unless="is.running.macos" />
-      <linkerarg value="-m64" if="cross_64" unless="is.running.macos" />
-      <linkerarg value="-lX11" location="end" if="is.running.linux" />
-
-      <!-- Mac OS X specific flags -->
-      <compilerarg value="-mmacosx-version-min=10.5" if="is.running.macos"/>
-      <compilerarg value="-arch" if="is.running.macos" />
-      <compilerarg value="x86_64" if="is.running.macos" />
-      <compilerarg value="-arch" if="is.running.macos" />
-      <compilerarg value="i386" if="is.running.macos" />
-      <compilerarg value="-arch" if="is.running.macos" />
-      <compilerarg value="ppc" if="is.running.macos" />
-      <compilerarg value="-I/System/Library/Frameworks/ApplicationServices.framework/Headers" if="is.running.macos" />
-      <compilerarg value="-I/System/Library/Frameworks/JavaVM.framework/Headers" if="is.running.macos" />
-
-      <linkerarg value="-o" location="end" if="is.running.macos" />
-      <linkerarg value="libjnscreencapture.jnilib" location="end" if="is.running.macos" />
-      <linkerarg value="-arch" if="is.running.macos" />
-      <linkerarg value="x86_64" if="is.running.macos" />
-      <linkerarg value="-arch" if="is.running.macos" />
-      <linkerarg value="i386" if="is.running.macos" />
-      <linkerarg value="-arch" if="is.running.macos" />
-      <linkerarg value="ppc" if="is.running.macos" />
-      <linkerarg value="-framework" if="is.running.macos" />
-      <linkerarg value="ApplicationServices" if="is.running.macos" />
-
-      <!-- Windows specific flags -->
-      <compilerarg value="-I${system.JAVA_HOME}/include" if="is.running.windows" />
-      <compilerarg value="-I${system.JAVA_HOME}/include/win32" if="is.running.windows" />
-
-      <linkerarg value="-lgdi32" location="end" if="is.running.windows" />
-      <linkerarg value="-ojnscreencapture.dll" if="is.running.windows" />
-      <linkerarg value="-Wl,--kill-at" if="is.running.windows" />
-
-      <fileset dir="${src}/native/screencapture" includes="*.c"/>
-    </cc>
-  </target>
-
   <!-- compile jnawtrenderer library -->
   <target name="jawtrenderer" description="Build jnawtrenderer shared library" depends="init-native">
-    <exec executable="/usr/libexec/java_home"
-	  failonerror="true"
-	  outputproperty="mac.java.home" >
-    </exec>
-
-    <echo message="${mac.java.home}"/>
     <cc outtype="shared" name="gcc" outfile="${native_install_dir}/jnawtrenderer" objdir="${obj}">
 
       <!-- common compiler flags -->
@@ -175,7 +120,7 @@
       <compilerarg value="-std=c99" />
       <compilerarg value="-Wall" />
 
-      <compilerarg value="-I${system.JAVA_HOME}/include" unless="is.running.macos" />
+      <compilerarg value="-I${system.JAVA_HOME}/include" />
 
       <linkerarg value="-m32" if="cross_32" unless="is.running.macos" />
       <linkerarg value="-m64" if="cross_64" unless="is.running.macos" />
@@ -205,8 +150,7 @@
       <compilerarg value="i386" if="is.running.macos" />
       <compilerarg value="-arch" if="is.running.macos" />
       <compilerarg value="x86_64" if="is.running.macos" />
-      <compilerarg value="-I${mac.java.home}/include/" if="is.running.macos" />
-      <compilerarg value="-I${mac.java.home}/include/darwin/" if="is.running.macos" />
+      <compilerarg value="-I${system.JAVA_HOME}/include/darwin/" if="is.running.macos" />
 
       <linkerarg value="-o" location="end" if="is.running.macos" />
       <linkerarg value="libjnawtrenderer.jnilib" location="end" if="is.running.macos" />
@@ -222,7 +166,7 @@
       <linkerarg value="AppKit" if="is.running.macos" />
       <linkerarg value="-framework" if="is.running.macos" />
       <linkerarg value="QuartzCore" if="is.running.macos" />
-      <linkerarg value="-L${mac.java.home}/lib/" if="is.running.macos" />
+      <linkerarg value="-L${system.JAVA_HOME}/lib/" if="is.running.macos" />
 
       <fileset dir="${src}/native/jawtrenderer" includes="org*.c JAWTRenderer_MacOSX.m" if="is.running.macos" />
 
@@ -316,20 +260,17 @@
       </cc>
     </target>
 
-  <!-- compile jspeex library -->
-  <target name="speex" description="Build jspeex shared library" depends="init-native">
-
-    <fail message="speex repository not set!" unless="speex" />
-
-    <cc outtype="shared" name="gcc" outfile="${native_install_dir}/jspeex" objdir="${obj}">
+  <!-- compile jnspeex library -->
+  <target name="speex" description="Build jnspeex shared library" depends="libjitsi.resolve-native-dependencies, init-native">
+    <cc outtype="shared" name="gcc" outfile="${native_install_dir}/jnspeex" objdir="${obj}">
       <!-- common compiler flags -->
       <compilerarg value="-std=c99" />
       <compilerarg value="-Wall" />
       <compilerarg value="-O2" />
-      <compilerarg value="-I${speex}/include" />
+      <compilerarg value="-I${src}/native/include" />
       <compilerarg value="-D_JNI_IMPLEMENTATION_" />
 
-      <linkerarg value="-L${speex}/libspeex/.libs" />
+      <linkerarg value="-L${native_install_dir}" />
 
       <!-- Linux specific flags -->
       <compilerarg value="-m32" if="cross_32" unless="is.running.macos" />
@@ -358,7 +299,7 @@
       <compilerarg value="-I/System/Library/Frameworks/JavaVM.framework/Headers" if="is.running.macos" />
 
       <linkerarg value="-o" location="end" if="is.running.macos" />
-      <linkerarg value="libjspeex.jnilib" location="end" if="is.running.macos" />
+      <linkerarg value="libjnspeex.jnilib" location="end" if="is.running.macos" />
       <linkerarg value="-dynamiclib" if="is.running.macos" />
       <linkerarg value="-arch" if="is.running.macos" />
       <linkerarg value="x86_64" if="is.running.macos" />
@@ -371,8 +312,9 @@
       <compilerarg value="-I${system.JAVA_HOME}/include" if="is.running.windows" />
       <compilerarg value="-I${system.JAVA_HOME}/include/win32" if="is.running.windows" />
 
-      <linkerarg value="-ojspeex.dll" if="is.running.windows" />
+      <linkerarg value="-ojnspeex.dll" if="is.running.windows" />
       <linkerarg value="-Wl,--kill-at" if="is.running.windows" />
+      <linkerarg value="-static-libgcc" if="is.running.windows" />
       <linkerarg value="-Wl,-Bstatic" location="end" if="is.running.windows" />
       <linkerarg value="-lspeex" location="end" if="is.running.windows" />
       <linkerarg value="-lspeexdsp" location="end" if="is.running.windows" />
@@ -381,6 +323,10 @@
 
       <fileset dir="${src}/native/speex" includes="*.c"/>
     </cc>
+
+    <antcall target="stripbinary">
+      <param name="executable" value="${native_install_dir}/jnspeex.dll" />
+    </antcall>
   </target>
 
   <!-- compile jng722 library -->
@@ -392,6 +338,8 @@
       <compilerarg value="-Wall" />
       <compilerarg value="-O2" />
       <compilerarg value="-D_JNI_IMPLEMENTATION_" />
+      <compilerarg value="-DLIBSPANDSP_EXPORTS" />
+      <compilerarg value="-fPIC"/>
 
       <!-- Linux specific flags -->
       <compilerarg value="-m32" if="cross_32" unless="is.running.macos" />
@@ -433,16 +381,8 @@
     </cc>
   </target>
 
-    <!-- compile opus
-        linux binaries are linked to the distribution binary (call ant -Dopus=)
-        while other os opus is added to shared library, to avoid
-        additional binaries
-        macosx and windows currently not tested.
-    -->
-    <target name="opus" description="Build opus shared library" depends="init-native">
-
-        <fail message="opus repository not set!" unless="opus"/>
-
+  <!-- compile opus -->
+    <target name="opus" description="Build opus shared library" depends="libjitsi.resolve-native-dependencies, init-native">
         <cc outtype="shared" name="gcc"
             objdir="${obj}"
             outfile="${native_install_dir}/jnopus">
@@ -451,12 +391,11 @@
             <compilerarg value="-Wall" />
             <compilerarg value="-fPIC"/>
             <compilerarg value="-O2" />
-            <compilerarg value="-I${opus}/include" unless="is.running.debian"/>
-            <compilerarg value="-I/usr/include/opus" if="is.running.debian"/>
+            <compilerarg value="-I${src}/native/include/opus" />
             <compilerarg value="-D_JNI_IMPLEMENTATION_" />
 
             <linkerarg value="-Wl,-z,relro" if="is.running.debian"/>
-            <linkerarg value="-L${opus}/.libs" unless="is.running.debian"/>
+            <linkerarg value="-L${native_install_dir}" />
 
             <!-- Linux specific flags -->
             <compilerarg value="-m32" if="cross_32" unless="is.running.macos" />
@@ -502,6 +441,7 @@
             <linkerarg value="-ojnopus.dll" if="is.running.windows" />
             <linkerarg value="-Wl,--no-undefined" if="is.running.windows" />
             <linkerarg value="-Wl,--kill-at" if="is.running.windows" />
+            <linkerarg value="-static-libgcc" if="is.running.windows" />
             <linkerarg value="-Wl,-Bstatic" location="end" if="is.running.windows" />
             <linkerarg value="-lopus" location="end" if="is.running.windows" />
 
@@ -518,75 +458,10 @@
                strip libjnopus.jnilib
           -->
         </cc>
-    </target>
 
-    <target name="libvpx" description="Build the libvpx shared library" depends="init-native">
-
-        <fail message="libvpx repository not set!" unless="libvpx"/>
-
-        <cc outtype="shared" name="gcc"
-            objdir="${obj}"
-            outfile="${native_install_dir}/jnvpx">
-            <!-- common compiler flags -->
-            <compilerarg value="-shared" />
-            <compilerarg value="-Wall" />
-            <compilerarg value="-fPIC"/>
-            <compilerarg value="-O2" />
-            <compilerarg value="-I${libvpx}" unless="is.running.linux"/>
-            <compilerarg value="-I/usr/include/vpx" if="is.running.linux"/>
-            <compilerarg value="-D_JNI_IMPLEMENTATION_" />
-
-            <linkerarg value="-L${libvpx}" />
-
-            <!-- Linux specific flags -->
-            <compilerarg value="-m32" if="cross_32" unless="is.running.macos" />
-            <compilerarg value="-m64" if="cross_64" unless="is.running.macos" />
-            <compilerarg value="-I${system.JAVA_HOME}/include" if="is.running.linux" />
-            <compilerarg value="-I${system.JAVA_HOME}/include/linux" if="is.running.linux" />
-
-            <linkerarg value="-m32" if="cross_32" unless="is.running.macos" />
-            <linkerarg value="-m64" if="cross_64" unless="is.running.macos" />
-
-            <!-- static libraries MUST be at the end otherwise
-                they will not be added to shared library
-            -->
-            <!--<linkerarg value="-Wl,-Bstatic" location="end" if="is.running.linux" />-->
-            <linkerarg value="-lvpx" location="end" if="is.running.linux" />
-            <!--<linkerarg value="-Wl,-Bdynamic" location="end" if="is.running.linux" />-->
-
-            <!-- Mac OS X specific flags -->
-            <compilerarg value="-mmacosx-version-min=10.5" if="is.running.macos"/>
-            <compilerarg value="-arch"  if="is.running.macos" />
-            <compilerarg value="x86_64" if="is.running.macos" />
-            <compilerarg value="-arch" if="is.running.macos" />
-            <compilerarg value="i386" if="is.running.macos" />
-            <compilerarg value="-arch" if="is.running.macos" />
-            <compilerarg value="ppc" if="is.running.macos" />
-            <compilerarg value="-I/System/Library/Frameworks/JavaVM.framework/Headers" if="is.running.macos" />
-
-            <linkerarg value="-o" location="end" if="is.running.macos" />
-            <linkerarg value="libjnvpx.jnilib" location="end" if="is.running.macos" />
-            <linkerarg value="-dynamiclib" if="is.running.macos" />
-            <linkerarg value="-arch" if="is.running.macos" />
-            <linkerarg value="x86_64" if="is.running.macos" />
-            <linkerarg value="-arch" if="is.running.macos" />
-            <linkerarg value="i386" if="is.running.macos" />
-            <linkerarg value="-arch" if="is.running.macos" />
-            <linkerarg value="ppc" if="is.running.macos" />
-            <linkerarg value="-lvpx" location="end" if="is.running.macos" />
-
-            <!-- Windows specific flags -->
-            <compilerarg value="-I${system.JAVA_HOME}/include" if="is.running.windows" />
-            <compilerarg value="-I${system.JAVA_HOME}/include/win32" if="is.running.windows" />
-
-            <linkerarg value="-ojnvpx.dll" if="is.running.windows" />
-            <linkerarg value="-Wl,--no-undefined" if="is.running.windows" />
-            <linkerarg value="-Wl,--kill-at" if="is.running.windows" />
-            <linkerarg value="-Wl,-Bstatic" location="end" if="is.running.windows" />
-            <linkerarg value="-lvpx" location="end" if="is.running.windows" />
-
-            <fileset dir="${src}/native/vpx" includes="*.c"/>
-        </cc>
+      <antcall target="stripbinary">
+        <param name="executable" value="${native_install_dir}/*jnopus.*" />
+      </antcall>
     </target>
 
   <!-- compile jnwincoreaudio library for Windows Vista, 7 and 8 (32-bit/64-bit)
@@ -613,6 +488,7 @@
       <compilerarg value="-m64" if="cross_64" />
 
       <linkerarg value="-ojnwincoreaudio.dll" />
+      <linkerarg value="-static-libgcc" />
       <linkerarg value="-Wl,--kill-at" />
       <libset libs="ole32" />
       <linkerarg value="-m32" if="cross_32" />
@@ -627,7 +503,7 @@
 
   <!-- compile jnmaccoreaudio library for Mac OS X (32-bit/64-bit) -->
   <target name="mac-coreaudio" description="Build jnmaccoreaudio shared library for Mac OS X" if="is.running.macos"
-    depends="init-native,libjitsi.resolve-native-dependencies">
+    depends="init-native">
     <cc outtype="shared" name="gcc" outfile="${native_install_dir}/jnmaccoreaudio" objdir="${obj}">
       <compilerarg value="-Wall" />
       <compilerarg value="-O2" />
@@ -937,8 +813,16 @@
     <delete file="${native_install_dir}/history.xml" failonerror="false" />
   </target>
 
-  <!-- Cleanup object file and shared libraries -->
-  <target name="clean-native" description="Clean all object file and libraries.">
+  <target name="stripbinary" if="is.release">
+    <echo message="Stripping ${executable}" />
+    <exec executable="strip">
+      <arg value="-x"/>
+      <arg value="${executable}"/>
+    </exec>
+  </target>
+
+  <!-- Cleanup object files and shared libraries -->
+  <target name="clean-native" description="Clean all object files and libraries.">
     <delete failonerror="false" includeemptydirs="true">
         <fileset dir="${obj}" />
         <fileset dir="${src}/native/" includes="*.dll *.so *.dyld *.jnilib *.manifest *.o *.obj *.lib *.exp history.xml" />
@@ -946,28 +830,33 @@
     </delete>
   </target>
 
+  <!-- Build all object files and shared libraries -->
+  <target name="build-native" description="Build all object files and libraries."
+          depends="jawtrenderer, wasapi, speex, opus, g722, directshow, win-coreaudio, mac-coreaudio, avfoundation">
+    <echo message="All object files and libraries have been built." />
+  </target>
+
   <!-- Help, print useful targets -->
   <target name="help-native">
     <echo message="Targets available:" />
-    <echo message="'ant screencapture' to compile screencapture shared library" />
+    <echo message="'ant clean-native' to clean all object files and libraries." />
+    <echo message="'ant build-native' to build all object files and libraries." />
+    <echo message="" />
     <echo message="'ant jawtrenderer' to compile jawtrenderer shared library" />
-    <echo message="'ant speex' to compile jspeex shared library" />
+    <echo message="'ant wasapi' to compile jnwasapi shared library" />
+    <echo message="'ant speex' to compile jnspeex shared library" />
+    <echo message="'ant opus' to compile opus shared library" />
     <echo message="'ant g722' to compile jng722 shared library" />
-    <echo message="'ant hid' to compile hid shared library" />
-    <echo message="'ant hwaddressretriever' to compile hwaddressretriever shared library" />
-    <echo message="'ant localhostretriever (Windows only)' to compile LocalhostRetriever shared library" />
     <echo message="'ant directshow (Windows only)' to compile jndirectshow shared library" />
-    <echo message="'ant aegeturleventhandler (Mac OS X only)' to compile AEGetURLEventHandler shared library" />
-    <echo message="'ant sparkle (Mac OS X only)' to compile sparkle shared library" />
     <echo message="'ant win-coreaudio (Windows Vista, 7 and 8 only)' to compile jnwincoreaudio shared library (use -Darch=32 or -Darch=64 for cross-compiling)" />
     <echo message="'ant mac-coreaudio (Mac OS X only)' to compile jnmaccoreaudio shared library" />
     <echo message="'ant avfoundation (Mac OS X only)' to compile javfoundation shared library" />
     <echo message="" />
     <echo message="Options:" />
     <echo message="-Darch: cross-compile for 32-bit (-Darch=32), 64-bit (-Darch=64) or ppc (-Darch=ppc, Mac OS X only) targets. Windows users have to use gcc >= 4.5." />
-    <echo message="-Dspeex: path to speex directory (jspeex JNI compilation)." />
+    <echo message="-Dwebrtc.src: path to Webrtc source directory." />
     <echo message="" />
-    <echo message="Please note that external libraries such as speex have to be compiled" />
+    <echo message="Please note that external libraries such as speex and opus have to be compiled and uploaded to artifact repository." />
   </target>
 </project>
 

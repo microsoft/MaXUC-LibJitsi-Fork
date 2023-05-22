@@ -1,9 +1,13 @@
 /*
+ * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  *
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.configuration;
+
+import static org.jitsi.util.Hasher.logHasher;
 
 import java.beans.*;
 import java.io.*;
@@ -31,47 +35,12 @@ import org.jitsi.util.xml.*;
 public abstract class AbstractScopedConfigurationServiceImpl
     implements ScopedConfigurationService
 {
-    private static final Map<String, AbstractScopedConfigurationServiceImpl> debugUsageMap
-        = new HashMap<>();
-
-    /**
-     * Debug mode here determines whether we check global()/user()
-     * configuration.
-     */
-    private static final String PROPERTY_DEBUG_MODE
-        = "net.java.sip.communicator.DEBUG_MODE";
-
-    /**
-     * There are a small number of properties that are legitimately used in
-     * both global() and user() variants.  They should really be named
-     * distinctly but since they're not, we use an allowlist to ignore them.
-     */
-    private static final List<String> debugAllowlist
-        = Arrays.asList("net.java.sip.communicator.SC_HOME_DIR_LOCATION",
-                        "net.java.sip.communicator.SC_HOME_DIR_NAME",
-                        "net.java.sip.communicator.DEBUG_MODE");
-
-    /**
-     * During upgrade we have to disable the debug checking because we are
-     * explicitly moving fields between the global() and user() configuration
-     * files.
-     */
-    private static boolean debugInUpgrade = false;
-
     /**
      * The <tt>Logger</tt> used by this <tt>ConfigurationServiceImpl</tt>
      * instance for logging output.
      */
-    private final Logger logger
+    private static final Logger logger
         = Logger.getLogger(AbstractScopedConfigurationServiceImpl.class);
-
-    /**
-     * The <tt>Logger</tt> used by this <tt>ConfigurationServiceImpl</tt>
-     * instance for logging config changes.  These are automatically logged
-     * to logger too.
-     */
-    private final Logger configLogger
-        = Logger.getLogger("libjitsi.ConfigLogger");
 
     /**
      * The name of the <tt>ConfigurationStore</tt> class to be used as the
@@ -195,7 +164,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
 
         try
         {
-            debugPrintSystemProperties();
             preloadSystemPropertyFiles();
             loadDefaultProperties();
             reloadConfigInternal(true);
@@ -204,8 +172,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
         {
             logger.error("Failed to load the configuration file", ex);
         }
-
-        recordAllConfig();
     }
 
     /**
@@ -220,31 +186,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
     public void setProperty(String propertyName, Object property)
     {
         setProperty(propertyName, property, false);
-    }
-
-    private void debugAssertPropertyUsage(String propertyName)
-    {
-        AbstractScopedConfigurationServiceImpl usingObject;
-
-        if (!debugInUpgrade &&
-            !debugAllowlist.contains(propertyName) &&
-            getGlobalConfigurationService().getBoolean(PROPERTY_DEBUG_MODE, false))
-        {
-            synchronized(debugUsageMap)
-            {
-                usingObject = debugUsageMap.get(propertyName);
-                if ((usingObject != null) && (usingObject != this))
-                {
-                    throw new IllegalArgumentException(
-                        "Using " + propertyName +
-                        " from both global and local configuration. " + this);
-                }
-                else
-                {
-                    debugUsageMap.put(propertyName, this);
-                }
-            }
-        }
     }
 
     /**
@@ -268,45 +209,8 @@ public abstract class AbstractScopedConfigurationServiceImpl
     {
         Object oldValue = getProperty(propertyName);
 
-        debugAssertPropertyUsage(propertyName);
-
         // No exception was thrown - lets change the property and fire a
         // change event
-
-        String oldStringValue = String.valueOf(oldValue);
-        String newStringValue = String.valueOf(property);
-
-        if (oldStringValue.length() > 10000)
-        {
-            configLogger.warn(propertyName + " has very long old value " +
-                                                       oldStringValue.length());
-            oldStringValue = oldStringValue.substring(0, 10000);
-        }
-
-        if (newStringValue.length() > 10000)
-        {
-            configLogger.warn(propertyName + " has very long new value " +
-                                                       newStringValue.length());
-            newStringValue = newStringValue.substring(0, 10000);
-        }
-
-        // Don't log PII
-        if ((propertyName.contains("chatRoomSubject") ||
-            propertyName.contains("CUSTOM_STATUS") ||
-            propertyName.contains("ctd.myphones")))
-        {
-            configLogger.config(propertyName +
-                ", size=" + store.numProperties() +
-                ", scope=" + this);
-        }
-        else
-        {
-            configLogger.config(propertyName + "->" + newStringValue +
-                                ": oldValue=" + oldStringValue +
-                                ", size=" + store.numProperties() +
-                                ", scope=" + this);
-        }
-
         doSetProperty(propertyName, property, isSystem);
 
         try
@@ -455,8 +359,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
 
     private void removeProperties(String propertyName, List<String> childPropertyNames)
     {
-        debugAssertPropertyUsage(propertyName);
-
         // Remove all properties
         for (String pName : childPropertyNames)
         {
@@ -467,10 +369,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
 
         // No exception was thrown - lets change the property and fire a
         // Change event
-        configLogger.config("Will remove prop: " + propertyName +
-                            ", size=" + store.numProperties() +
-                            ", scope=" + this);
-
         store.removeProperty(propertyName);
 
         if (changeEventDispatcher.hasPropertyChangeListeners(propertyName))
@@ -539,7 +437,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
 
                 if (storedUID.equals(accountUID))
                 {
-                    logger.debug("Removing account config for " + accountUID);
+                    logger.debug("Removing account config for " + logHasher(accountUID));
                     removeProperty(accountConfigString);
                     break;
                 }
@@ -550,7 +448,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
                 // If we've been asked to remove the reconnectplugin config for
                 // this protocol so that we don't report reconnection failures for,
                 // or try to reconnect to the removed account, do so now.
-                logger.debug("Remove reconnectplugin config for " + storedUID);
+                logger.debug("Remove reconnectplugin config for " + logHasher(storedUID));
                 String reconnectPrefix =
                     "net.java.sip.communicator.plugin.reconnectplugin." +
                         "ATLEAST_ONE_SUCCESSFUL_CONNECTION.";
@@ -580,8 +478,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
     {
         Object result = immutableDefaultProperties.get(propertyName);
 
-        debugAssertPropertyUsage(propertyName);
-
         if (result != null)
         {
             return result;
@@ -606,14 +502,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
     @Override
     public List<String> getAllPropertyNames()
     {
-        List<String> resultKeySet = new LinkedList<>();
-
-        for (String key : store.getPropertyNames())
-        {
-            resultKeySet.add(key);
-        }
-
-        return resultKeySet;
+        return Arrays.asList(store.getPropertyNames());
     }
 
     /**
@@ -882,7 +771,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
                 {
                     // This doesn't look right at all
                     logger.warn("Only have " + store.numProperties() +
-                               " properties in config file - attempt recovery");
+                                " properties in config file - attempt recovery");
                     TransactionBasedFile.attemptRecovery(file);
                     reloadConfigInternal(false);
                     // After the recursive call above, don't run through
@@ -984,7 +873,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
      */
     private synchronized void storeConfigurationInternal(boolean hardFlush) throws IOException
     {
-        logger.debug("Storing configuration to: " + configurationFile);
+        logger.debug("Storing configuration to sip-communicator.properties file in user space.");
 
         // If the configuration file is forcibly considered read-only, do not
         // write it.
@@ -1245,7 +1134,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
                     // The .xml extension is forced on us so we have to assume
                     // that whoever forced it knows what she wants to get so we
                     // have to obey and use the XML format.
-                    logger.debug("Forced to use .xml configuration file: " + this.configurationFile);
+                    logger.debug("Forced to use .xml configuration file.");
 
                     this.configurationFile =
                             configurationFile.exists()
@@ -1381,7 +1270,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
         throws IOException
     {
         logger.debug("Get configuration file with extension: " + extension +
-                " and create: " + create);
+                     " and create: " + create);
 
         // See whether we have a user specified name for the conf file
         String pFileName = getSystemProperty(PNAME_CONFIGURATION_FILE_NAME);
@@ -1394,8 +1283,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
         File configFileInCurrentDir = new File(pFileName);
         if (configFileInCurrentDir.exists())
         {
-            logger.debug("Using config file in current dir: " +
-                            configFileInCurrentDir.getAbsolutePath());
+            logger.debug("Using config file in current directory.");
 
             return configFileInCurrentDir;
         }
@@ -1425,9 +1313,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
 
         if (configFileInUserHomeDir.exists())
         {
-            logger.debug("Using config file in $HOME/.sip-communicator: " +
-                    configFileInUserHomeDir.getAbsolutePath() +
-                    ", size=" + configFileInUserHomeDir.length());
+            logger.debug("Using config file in $HOME/.sip-communicator, size=" + configFileInUserHomeDir.length());
 
             return configFileInUserHomeDir;
         }
@@ -1445,19 +1331,17 @@ public abstract class AbstractScopedConfigurationServiceImpl
                 configDir.mkdirs();
                 configFileInUserHomeDir.createNewFile();
 
-                logger.debug("Created an empty file in $HOME: " +
-                        configFileInUserHomeDir.getAbsolutePath());
+                logger.debug("Created an empty file in $HOME");
             }
             else
             {
-                logger.debug("Returning: " + configFileInUserHomeDir.getAbsolutePath());
+                logger.debug("Returning config file located in $HOME");
             }
 
             return configFileInUserHomeDir;
         }
 
-            logger.debug("Copying config file from JAR into " +
-                configFileInUserHomeDir.getAbsolutePath());
+            logger.debug("Copying config file from JAR into config file located in $HOME");
 
         configDir.mkdirs();
         try
@@ -1680,8 +1564,8 @@ public abstract class AbstractScopedConfigurationServiceImpl
             catch (NumberFormatException ex)
             {
                 logger.error(propertyName
-                    + " does not appear to be an integer. " + "Defaulting to "
-                    + defaultValue + ".", ex);
+                             + " does not appear to be an integer. " + "Defaulting to "
+                             + defaultValue + ".", ex);
             }
         }
         return intValue;
@@ -1723,8 +1607,8 @@ public abstract class AbstractScopedConfigurationServiceImpl
             catch (NumberFormatException ex)
             {
                 logger.error(propertyName +
-                       " does not appear to be a longinteger. " +
-                        "Defaulting to " + defaultValue + ".", ex);
+                             " does not appear to be a longinteger. " +
+                             "Defaulting to " + defaultValue + ".", ex);
             }
         }
         return longValue;
@@ -1764,21 +1648,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
             {
                 store.removeProperty(name);
             }
-        }
-    }
-
-    /**
-     * Goes over all system properties and outputs their names and values for
-     * debug purposes. The method has no effect if the logger is at a log level
-     * other than DEBUG or TRACE (FINE or FINEST).
-     * * Changed that system properties are printed in INFO level and this way
-     *   they are included in the beginning of every users log file.
-     */
-    private void debugPrintSystemProperties()
-    {
-        for (Map.Entry<Object, Object> entry : System.getProperties().entrySet())
-        {
-            logger.info(entry.getKey() + "=" + entry.getValue());
         }
     }
 
@@ -1825,7 +1694,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
                 // kind of silence all possible exceptions (which would most
                 // often be IOExceptions). We will however log them in case
                 // anyone would be interested.
-                logger.error("Failed to load property file: " + fileName, ex);
+                logger.error("Failed to load property file.", ex);
             }
         }
     }
@@ -1879,30 +1748,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
     }
 
     /**
-     * Write all of the config to the config logger.
-     */
-    private void recordAllConfig()
-    {
-      List<String> propertyNames = getAllPropertyNames();
-      int size = propertyNames.size();
-
-      if (size == 0)
-      {
-          configLogger.info("No pre-existing config found");
-      }
-
-      for (String propertyName : propertyNames)
-      {
-          // Don't log PII
-          if(!propertyName.contains("chatRoomSubject"))
-          {
-              configLogger.config(
-                      propertyName + ": initialValue=" + getProperty(propertyName));
-          }
-      }
-    }
-
-     /**
      * Loads the default properties maps from the Jitsi installation directory.
      * then overrides them with the default override values.
      */
@@ -1973,8 +1818,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
         catch (Exception ex)
         {
             // We can function without defaults so we are just logging those.
-            logger.info("No defaults property file loaded: " + fileName
-                + ". Not a problem.");
+            logger.info("No defaults property file loaded. Not a problem.");
 
             logger.debug("load exception", ex);
         }
@@ -2014,19 +1858,5 @@ public abstract class AbstractScopedConfigurationServiceImpl
         }
 
         return defaultValue;
-    }
-
-    @Override
-    public void debugSetInUpgrade(boolean inUpgrade)
-    {
-        synchronized(debugUsageMap)
-        {
-            AbstractScopedConfigurationServiceImpl.debugInUpgrade = inUpgrade;
-
-            if (!inUpgrade)
-            {
-                debugUsageMap.clear();
-            }
-        }
     }
  }

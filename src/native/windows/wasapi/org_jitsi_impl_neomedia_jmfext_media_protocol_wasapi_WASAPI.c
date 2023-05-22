@@ -4,6 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 
 #include "org_jitsi_impl_neomedia_jmfext_media_protocol_wasapi_WASAPI.h"
 

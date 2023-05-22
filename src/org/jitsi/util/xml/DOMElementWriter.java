@@ -21,6 +21,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.util.xml;
 
 import java.io.*;

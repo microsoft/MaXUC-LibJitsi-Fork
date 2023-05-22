@@ -4,6 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.service.configuration;
 
 import java.beans.*;
@@ -453,15 +454,6 @@ public interface ScopedConfigurationService
      * @return  the name of the configuration file currently used.
      */
     String getConfigurationFilename();
-
-    /**
-     * For debug testing only!
-     * Notify the configuration service that we are performing upgrade and so
-     * the test of 'don't use same data in both global() and user() contexts'
-     * canot be applied.
-     * @param inUpgrade Indicates that we are in upgrade processing.
-     */
-    void debugSetInUpgrade(boolean inUpgrade);
 
     /**
      * Find the global configuration.

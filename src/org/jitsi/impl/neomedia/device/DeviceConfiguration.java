@@ -4,6 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.device;
 
 import java.awt.*;
@@ -598,6 +599,54 @@ public class DeviceConfiguration
     public List<Device> getAvailableAudioCaptureDevices()
     {
         return mAudioSystem.getActiveDevices(DataFlow.CAPTURE);
+    }
+
+    /**
+     * Attempts to set the requested active audio device.  If a device with the
+     * given id is not found, the method will log a warning but does not return
+     * an error to the calling code.
+     *
+     * @param id The id of the device to set.
+     * @param dataFlow the data flow of the device to set: capture, notify or
+     * playback
+     */
+    public void setSelectedAudioDevice(String id, DataFlow dataFlow)
+    {
+        List<Device> devices = mAudioSystem.getActiveDevices(dataFlow);
+        for (Device device : devices)
+        {
+            if (device.getUID().equals(id))
+            {
+                mAudioSystem.setSelectedDevice(dataFlow, device);
+                sLog.info("Updated device of type " + dataFlow + " to " + device);
+                return;
+            }
+        }
+
+        sLog.warn("Failed to find device of type " + dataFlow + " with id " + id);
+    }
+
+    /**
+     * Attempts to set the requested active video device.  If a device with the
+     * given id is not found, the method will log a warning but does not return
+     * an error to the calling code.
+     *
+     * @param id The id of the device to set.
+     */
+    public void setSelectedVideoDevice(String id)
+    {
+        List<Device> devices = mVideoSystem.getActiveDevices();
+        for (Device device : devices)
+        {
+            if (device.getUID().equals(id))
+            {
+                mVideoSystem.setSelectedDevice(device);
+                sLog.info("Updated video device to " + device);
+                return;
+            }
+        }
+
+        sLog.warn("Failed to find video device with id " + id);
     }
 
     /**

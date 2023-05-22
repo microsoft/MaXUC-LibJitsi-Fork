@@ -47,8 +47,7 @@ public class TransactionBasedFile
     {
         mFile = file;
 
-        logger.debug("Create transaction-based file: " + file.getAbsolutePath() +
-                     ", size=" + file.length());
+        logger.debug("Create transaction-based file: " + file.getName() + ", with size=" + file.length());
         transactionInProgress = false;
     }
 
@@ -110,7 +109,7 @@ public class TransactionBasedFile
         }
         catch (IOException e)
         {
-            logger.error("Couldn't sync write to file: " + fileToSync, e);
+            logger.error("Couldn't sync write to file: " + fileToSync.getName(), e);
         }
     }
 
@@ -146,9 +145,17 @@ public class TransactionBasedFile
 
             syncFileToDisk(mFile);
         }
+        catch (FileSystemException fse)
+        {
+            // don't log original exception as it can contain user home folder.
+            // Use file names only and original reason, see FileSystemException#getMessage()
+            logger.error("Couldn't replace config file " +
+                         mTempFile.getName() + " -> " + mFile.getName() +
+                         ": " + fse.getReason());
+        }
         catch (IOException ioex)
         {
-            logger.error("Couldn't commit transaction", ioex);
+            logger.error("Couldn't replace config file", ioex);
         }
 
         mTempFile = null;
@@ -202,7 +209,7 @@ public class TransactionBasedFile
         }
         catch (FileNotFoundException e)
         {
-            logger.error("Couldn't get file output stream for temp file: " +  mTempFile);
+            logger.error("Couldn't get file output stream for temp file");
             throw new IllegalStateException(
                     "Couldn't get file output stream for temp file", e);
         }

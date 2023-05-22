@@ -1,11 +1,13 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
 <!-- This file describes every dependency that we need to download to build libjitsi. -->
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra" >
     <info organisation="Metaswitch" module="Main" />
     <configurations>
         <!-- Dependencies needing ivy:retrieve to specific download locations -->
-        <conf name="buildtools" /> <!-- buildtools downloads to buildtools -->
-        <conf name="lib" /> <!-- lib conf downloads to libjitsi/lib. -->
-        <conf name="nativemac" /> <!-- nativemac conf downloads to libjitsi/lib/native/mac. -->
+        <conf name="buildtools" /> <!-- buildtools configuration downloads to buildtools folder. -->
+        <conf name="lib" /> <!-- lib configuration downloads to libjitsi/lib folder. -->
+        <conf name="nativewindows" /> <!-- nativewindows configuration downloads to libjitsi/lib/native/windows folder. -->
+        <conf name="nativemac" /> <!-- nativemac conf downloads to libjitsi/lib/native/mac folder. -->
         <!-- Scopes -->
         <conf name="runtime" />
     </configurations>
@@ -18,35 +20,38 @@
         -->
 
         <dependency org="ant-contrib" name="ant-contrib" rev="1.0b3" conf="buildtools->default" >
-            <!-- Provides ant-contrib.jar and transitive dependency ant.jar in buildtools -->
+            <!-- Provides ant-contrib.jar in buildtools -->
+
+            <!-- ant.jar is provided within Apache Ant installation -->
+            <exclude org="ant" module="ant"/>
         </dependency>
         <dependency org="ant-contrib" name="cpptasks" rev="1.0b5" conf="buildtools->default" >
-            <!-- Provides cpptasks.jar and transitive dependencies ant.jar and xercesImpl.jar in buildtools -->
+            <!-- Provides cpptasks.jar in buildtools -->
+
+            <!-- ant.jar is provided within Apache Ant installation. -->
+            <exclude org="ant" module="ant"/>
+            <!-- Xerces implementation is included in JDK. -->
+            <exclude org="xerces" module="xercesImpl"/>
         </dependency>
 
         <dependency org="org.osgi" name="osgi.core" rev="8.0.0" conf="runtime,lib->default">
             <!-- Provides osgi.core.jar in libjitsi/lib -->
         </dependency>
 
-        <dependency name="fmj" rev="sw6-no-jpeg" conf="runtime,lib->default" >
+        <dependency name="fmj" rev="1.0.4" conf="runtime,lib->default" >
             <!-- Provides fmj.jar in libjitsi/lib -->
-        </dependency>
-
-        <!-- From https://sourceforge.net/projects/jspeex/ -->
-        <dependency name="jspeex" rev="0.9.7" conf="runtime,lib->default">
-            <artifact name="jspeex" type="java" ext="jar" />
         </dependency>
 
         <dependency org="org.bytedeco" name="ffmpeg" rev="4.4-1.5.6" conf="runtime,lib->default" >
             <!-- Provides ffmpeg.jar and its transitive dependency javacpp.jar in libjitsi/lib -->
         </dependency>
 
-        <dependency name="jain-sip-ri" rev="1.2.1115"  conf="runtime,lib->default">
-            <!-- we rolled jain-sdp.jar into jain-sip-ri.jar (just like upstream) so there will be only one jar -->
+        <dependency org="javax.sip" name="jain-sip-ri" rev="1.2.344" conf="runtime,lib->default">
+            <!-- Provides jain-sip-ri.jar in libjitsi/lib -->
             <artifact name="jain-sip-ri" type="jar" ext="jar"/>
         </dependency>
 
-        <dependency org="org.bouncycastle" name="bcpkix-jdk15on" rev="1.69" conf="runtime,lib->default" >
+        <dependency org="org.bouncycastle" name="bcpkix-jdk15on" rev="1.70" conf="runtime,lib->default" >
             <!-- Provides bcpkix-jdk15on.jar and transitive dependency bcprov-jdk15on.jar in libjitsi/lib -->
         </dependency>
 
@@ -62,22 +67,41 @@
             <!-- Provides commons-lang3.jar in libjitsi/lib -->
         </dependency>
 
+        <dependency org="org.apache.commons" name="commons-text" rev="1.10.0" conf="runtime,lib->default" >
+            <!-- Provides commons-text.jar in libjitsi/lib -->
+        </dependency>
+
         <dependency org="com.googlecode.json-simple" name="json-simple" rev="1.1.1" conf="runtime,lib->default" transitive="false" >
             <!-- Provides json-simple.jar in libjitsi/lib.
             transitive="false" to exclude junit, which json-simple's POM file erroneously declares as a compile dependency. -->
         </dependency>
 
-        <dependency org="com.google.guava" name="guava" rev="31.0.1-jre" conf="runtime,lib->default" transitive="false" >
-        <!-- Provides guava.jar in libjitsi/lib. -->
-    </dependency>
+        <dependency org="com.google.guava" name="guava" rev="31.1-jre" conf="runtime,lib->default" transitive="false" >
+             <!-- Provides guava.jar in libjitsi/lib. -->
+        </dependency>
 
         <!--
             **************************************************************************
-            * custom dependencies                                                 *
+            * custom dependencies                                                    *
             **************************************************************************
         -->
 
         <!-- These are custom-built or non-Maven dependencies -->
+
+        <!-- Built externally from sources https://github.com/xiph/speex/releases -->
+        <dependency name="libspeex" rev="1.2.1" conf="nativewindows->default">
+            <artifact name="libspeex" type="native" ext="a" />
+        </dependency>
+
+        <!-- Built externally from sources https://github.com/xiph/speexdsp/releases -->
+        <dependency name="libspeexdsp" rev="1.2.1" conf="nativewindows->default">
+            <artifact name="libspeexdsp" type="native" ext="a" />
+        </dependency>
+
+        <!-- Built externally from sources https://opus-codec.org/downloads/ -->
+        <dependency name="libopus" rev="1.3.1" conf="nativewindows->default">
+            <artifact name="libopus" type="native" ext="a" />
+        </dependency>
 
         <!-- Built by jitsi/src/native/build.xml target "webrtc-aec" -->
         <dependency name="libjnwebrtc" rev="1.0" conf="nativemac->default">

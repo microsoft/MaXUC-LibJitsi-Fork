@@ -5,7 +5,7 @@
  * See terms of license at gnu.org.
  *
  * Some of the code in this class is derived from ccRtp's SRTP implementation,
- * which has the following copyright notice:
+ * CryptoContext.cxx and CryptoContext.h, which has the following copyright notice:
  *
   Copyright (C) 2004-2006 the Minisip Team
 
@@ -23,6 +23,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.transform.srtp;
 
 import java.util.*;

@@ -34,4 +34,11 @@ public interface VersionService
      * string.
      */
     Version parseVersionString(String version);
+
+    /**
+     * Returns true if the client is running a version below the minimum
+     * allowed version specified in the current subscriber's config (false if
+     * no such minimum version is provided in the config).
+     */
+    boolean isOutOfDate();
 }

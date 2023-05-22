@@ -4,9 +4,11 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 #ifndef device_h
 #define device_h
 
+#include <initguid.h>
 #include <mmdeviceapi.h>
 
 /**

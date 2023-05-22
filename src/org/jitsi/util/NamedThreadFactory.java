@@ -4,6 +4,8 @@ package org.jitsi.util;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jitsi.util.CustomAnnotations.*;
+
 /**
  * A thread factory for use in executors which names the threads that are created
  */
@@ -22,7 +24,7 @@ public final class NamedThreadFactory implements ThreadFactory
     }
 
     @Override
-    public Thread newThread(Runnable r)
+    public Thread newThread(@NotNull Runnable r)
     {
         return new Thread(r, mName + "-" + i.getAndIncrement());
     }

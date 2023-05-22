@@ -4,6 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.device;
 
 import org.jitsi.service.configuration.*;
@@ -223,7 +224,7 @@ abstract class DeviceListManager
         // Checks if there is a change.
         if (!Objects.equals(device, mSelectedDevice))
         {
-            sLog.debug("Setting the selected device to " + device.getName() + ":" + device.getUID());
+            sLog.debug("Setting the selected device to " + device.getModelIdentifier());
 
             // Saves the new selected device in top of the user preferences.
             updateDeviceList(device, SaveDeviceMode.PUT_AT_START);
@@ -255,7 +256,8 @@ abstract class DeviceListManager
      */
     Device getAndRefreshSelectedDevice(boolean firePropertyChange)
     {
-        deviceLogger.debug("Refreshing the selected device, was: " + mSelectedDevice);
+        deviceLogger.debug("Refreshing the selected device, was: " +
+                           (mSelectedDevice != null ? mSelectedDevice.getModelIdentifier() : "none"));
 
         Device previouslySelectedDevice = mSelectedDevice;
 
@@ -269,7 +271,8 @@ abstract class DeviceListManager
             mDeviceSystemProperties.propertyChange(getPropDevice(), previouslySelectedDevice, deviceToSelect);
         }
 
-        deviceLogger.debug("Selected device now: " + deviceToSelect);
+        deviceLogger.debug("Selected device now: " +
+                           (deviceToSelect != null ? deviceToSelect.getModelIdentifier() : "none"));
 
         mSelectedDevice = deviceToSelect;
 
@@ -337,7 +340,7 @@ abstract class DeviceListManager
 
                 if (deviceName == null)
                 {
-                    sLog.warn("Null device found in " + deviceIdentifiers);
+                    sLog.warn("Null device found in " + Arrays.toString(deviceIdentifiers));
                     continue;
                 }
 
@@ -358,7 +361,6 @@ abstract class DeviceListManager
                 {
                     if (!uids.contains(uid))
                     {
-                        sLog.debug("    UID: " + uid);
                         uids.add(uid);
                     }
                 }
@@ -405,8 +407,6 @@ abstract class DeviceListManager
                     uidsList.add(activeDevice.getUID());
 
                     mDeviceUIDs.put(deviceName, uidsList);
-
-                    sLog.debug("Adding uid " + activeDevice.getUID() + " to device " + deviceName);
                 }
             }
 
@@ -442,7 +442,7 @@ abstract class DeviceListManager
         for (int i = mActiveDevices.size() - 1; i >= 0; i--)
         {
             Device activeDevice = mActiveDevices.get(i);
-            deviceLogger.debug("Examining " + getDataflowType() + " device: " + activeDevice.getName() + " UID: " + activeDevice.getUID());
+            deviceLogger.debug("Examining " + getDataflowType() + " device: " + activeDevice.getModelIdentifier());
 
             boolean atStart;
 
@@ -535,7 +535,7 @@ abstract class DeviceListManager
                 if (devicePreference.equals(activeDevice.getName()))
                 {
                     // We have found the "preferred" device among active device.
-                    deviceLogger.debug("Found matching device " + activeDevice.getName() + ":" + activeDevice.getUID());
+                    deviceLogger.debug("Found matching device " + activeDevice.getModelIdentifier());
                     matchingDevices.add(activeDevice);
                 }
             }
@@ -555,7 +555,7 @@ abstract class DeviceListManager
                         {
                             if (uid.equals(matchingDevice.getUID()))
                             {
-                                deviceLogger.debug("Found preferred device " + matchingDevice.getName() + ":" + matchingDevice.getUID());
+                                deviceLogger.debug("Found preferred device " + matchingDevice.getModelIdentifier());
                                 preferredDevice = matchingDevice;
                                 return preferredDevice;
                             }
@@ -582,8 +582,7 @@ abstract class DeviceListManager
         if (newDeviceName == null || newDeviceUID == null)
         {
             // Don't include null devices
-            sLog.warn("Null device identity. Device name: " + newDeviceName +
-                                                " Device UID: " + newDeviceUID);
+            sLog.warn("Null device identity. Device model: " + device.getModelIdentifier());
             return;
         }
 

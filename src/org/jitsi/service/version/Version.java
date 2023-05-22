@@ -6,6 +6,8 @@
  */
 package org.jitsi.service.version;
 
+import org.jitsi.util.CustomAnnotations.*;
+
 /**
  * Contains version information of the Jitsi instance that we're currently
  * running.
@@ -114,7 +116,7 @@ public interface Version
      * represents a version that is earlier, same, or more recent than the one
      * referenced by the <tt>version</tt> parameter.
      */
-    int compareTo(Version version);
+    int compareTo(@NotNull Version version);
 
     /**
      * Compares the <tt>version</tt> parameter to this version and returns true

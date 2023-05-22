@@ -15,8 +15,8 @@ This work includes software from the ice4j project:
  * See the License for the specific language governing permissions and
  * limitations under the License.
 
-Some of the code in this work was derived from ccRtp's SRTP implementation,
-which has the following copyright notice:
+Some of the code in this class is derived from ccRtp's SRTP implementation,
+CryptoContext.cxx and CryptoContext.h, which has the following copyright notice:
  * Copyright (C) 2004-2006 the Minisip Team
  *
  * This library is free software; you can redistribute it and/or

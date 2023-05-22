@@ -4,6 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.util;
 
 import java.io.ByteArrayInputStream;
@@ -13,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Implements utility functions to facilitate work with <tt>String</tt>s.
@@ -23,6 +25,7 @@ import java.util.Objects;
 public final class StringUtils
 {
     private static String lineSeparator = System.getProperty("line.separator");
+    private static Pattern safeDataPattern = Pattern.compile("^(null|0|1|-1|true|false)$");
 
     /**
      * Prevents the initialization of <tt>StringUtils</tt> instances because the
@@ -71,6 +74,19 @@ public final class StringUtils
         if (wordEndIndex >= camelCaseLength)
             display.append(camelCase.substring(wordBeginIndex));
         return display.toString();
+    }
+
+    /**
+     * Indicates whether string is null, empty, or specific boolean values that we
+     * do not need to hash before logging as they cannot be personal data,
+     * even if they get passed to the Hasher.
+     *
+     * @param s the string to analyze.
+     * @return <tt>true</tt> if string is any of the listed values
+     */
+    public static boolean isNullOrEmptyOrBoolean(String s)
+    {
+        return isNullOrEmpty(s, true) || safeDataPattern.matcher(s).find();
     }
 
     /**

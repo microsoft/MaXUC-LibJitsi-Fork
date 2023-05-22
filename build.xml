@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
 <project name="libjitsi" xmlns:jacoco="antlib:org.jacoco.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
     <!-- Java version to use.  We use the same version for everything. -->
     <property name="javac.source" value="11"/>
@@ -6,6 +7,7 @@
 
     <dirname property="lj.basedir" file="${ant.file.libjitsi}"/>
     <property name="project.basedir" value="${lj.basedir}/"/> <!-- When invoked from jitsi/build.xml, this property is already set. -->
+    <property name="ext" value="${lj.basedir}/.."/>
     <property file="local.properties" />
     <property name="libjitsi.dest" value="${lj.basedir}/classes" />
     <property name="libjitsi.testdest" value="${lj.basedir}/testclasses" />
@@ -73,8 +75,9 @@
     </target>
 
     <target name="resolve-native-dependencies" description="Get our native dependencies." depends="buildtools.init-ivy" unless="skip-resolve-libjitsi-dependencies" >
-        <ivy:settings file="${project.basedir}/ivysettings.xml" />
+        <ivy:settings file="${ext}/ivysettings.xml" />
         <ivy:resolve file="${lj.basedir}/ivy.xml" transitive="true" />
+        <ivy:retrieve conf="nativewindows" pattern="${lj.basedir}/lib/native/windows/[artifact].[ext]" overwriteMode="different"/>
         <ivy:retrieve conf="nativemac" pattern="${lj.basedir}/lib/native/mac/[artifact].[ext]" overwriteMode="different"/>
     </target>
 

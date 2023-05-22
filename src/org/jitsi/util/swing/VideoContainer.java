@@ -12,6 +12,7 @@ import java.beans.*;
 
 import javax.swing.*;
 
+import org.jitsi.util.CustomAnnotations.*;
 import org.jitsi.util.OSUtils;
 
 /**
@@ -131,7 +132,7 @@ public class VideoContainer
     }
 
     @Override
-    public void add(Component comp, Object constraints)
+    public void add(@NotNull Component comp, Object constraints)
     {
         add(comp, constraints, -1);
     }

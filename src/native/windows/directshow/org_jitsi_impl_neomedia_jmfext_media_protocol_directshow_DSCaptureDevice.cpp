@@ -4,6 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 
 /**
  * \file org_jitsi_impl_neomedia_jmfext_media_protocol_directshow_DSCaptureDevice.cpp

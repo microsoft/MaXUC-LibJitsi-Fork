@@ -4,6 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.codec.video.h264;
 
 import static org.bytedeco.ffmpeg.avcodec.AVCodecContext.*;
@@ -832,23 +833,29 @@ public class JNIEncoder
                          " receive return code: " + receive_ret);
         }
 
-        int bytesToOutput = pkt.buf().size(); // Number of bytes used in the output buffer
+        if (pkt.buf() != null)
+        {
+            int bytesToOutput = pkt.buf().size(); // Number of bytes used in the output buffer
 
-        // Copy packet data into output array
-        byte[] out
-                = AbstractCodec2.validateByteArraySize(
-                outBuffer,
-                rawFrameLen,
-                false);
+            // Copy packet data into output array
+            byte[] out = AbstractCodec2.validateByteArraySize(outBuffer,
+                                                              rawFrameLen,
+                                                              false);
 
-        pkt.buf().data().get(out, 0, bytesToOutput);
+            pkt.buf().data().get(out, 0, bytesToOutput);
 
-        av_packet_unref(pkt);
+            av_packet_unref(pkt);
 
-        outBuffer.setData(out);
-        outBuffer.setLength(bytesToOutput);
-        outBuffer.setOffset(0);
-        outBuffer.setTimeStamp(inBuffer.getTimeStamp());
+            outBuffer.setData(out);
+            outBuffer.setLength(bytesToOutput);
+            outBuffer.setOffset(0);
+            outBuffer.setTimeStamp(inBuffer.getTimeStamp());
+        }
+        else
+        {
+            av_packet_unref(pkt);
+        }
+
         return BUFFER_PROCESSED_OK;
     }
 

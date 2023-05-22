@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+
 #################
 ## Eclipse
 #################
@@ -14,6 +16,7 @@ local.properties
 .settings/
 .loadpath
 classes
+.classpath
 
 # External tool builders
 .externalToolBuilders/

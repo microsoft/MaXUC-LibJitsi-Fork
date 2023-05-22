@@ -8,6 +8,8 @@ package org.jitsi.service.neomedia;
 
 import java.awt.*;
 
+import org.jitsi.util.CustomAnnotations.*;
+
 /**
  * Predefined quality preset used to specify some video settings during an
  * existing call or when starting a new call.
@@ -95,11 +97,11 @@ public class QualityPreset
      * less than, equal to, or greater than the specified object.
      */
     @Override
-    public int compareTo(QualityPreset o)
+    public int compareTo(@NotNull QualityPreset o)
     {
         if(resolution == null)
             return -1;
-        else if((o == null) || (o.resolution == null))
+        else if (o.resolution == null)
             return 1;
         else if(resolution.equals(o.resolution))
             return 0;

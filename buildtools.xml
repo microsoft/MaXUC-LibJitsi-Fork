@@ -1,10 +1,24 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
 <project name="buildtools" xmlns:ivy="antlib:org.apache.ivy.ant" >
+    <!--
+        NOTE: This file is to be used only for standalone building of libjitsi.
+        Task "get-build-dependencies" is skipped if libjitsi is included as a submodule.
+
+        This antfile fragment provides targets to define extra ant tasks.
+        Usage: <include file="PATH/TO/buildtools.xml" />, then depends="buildtools.init-whatever" on the targets that want to use the extra tasks.
+        If the `offlineBuild` property is set to "yes" or "true", the libraries will not be downloaded; otherwise they are downloaded using Apache Ivy (or via <get> task
+        in the case of the ivy.jar itself).  All jar files are downloaded to the dynamically-created "buildtools" subdirectory of the project.
+    -->
     <dirname property="project.basedir" file="${ant.file.buildtools}" />
     <property name="ivy.version" value="2.5.0" />
     <property name="ivy.dir" value="${project.basedir}/buildtools" />
 
     <target name="init-ivy" unless="${offlineBuild}" >
         <mkdir dir="${ivy.dir}" />
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar"
+             dest="${ivy.dir}/ivy.jar" />
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpath="${ivy.dir}/ivy.jar"/>
     </target>
 
     <condition property="skip-get-build-dependencies">
@@ -15,8 +29,8 @@
     </condition>
 
     <target name="get-build-dependencies" description="Get build-time dependencies" unless="skip-get-build-dependencies" depends="init-ivy" >
-        <!-- This target downloads the build-time tools only.  The runtime libraries are downloaded by abstract-brand-build.xml, jitsi/build.xml, and libjitsi/build.xml -->
-        <ivy:settings file="${project.basedir}/../ivysettings.xml" />
+        <!-- This target downloads the build-time tools only. -->
+        <ivy:settings file="${project.basedir}/ivysettings.xml" />
         <ivy:resolve file="${project.basedir}/ivy.xml" transitive="true" conf="buildtools" />
         <mkdir dir="${project.basedir}/buildtools" />
         <ivy:retrieve conf="buildtools" pattern="${project.basedir}/buildtools/[artifact](-[classifier]).[ext]" overwriteMode="different" />

@@ -20,4 +20,13 @@ public class CustomAnnotations
     @Retention(RetentionPolicy.SOURCE)
     @Inherited
     public @interface CalledFromNativeCode {}
+
+    @Retention(RetentionPolicy.CLASS)
+    @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.LOCAL_VARIABLE})
+    public @interface NotNull {}
+
+    @Retention(RetentionPolicy.CLASS)
+    @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+    public @interface Nullable {}
+
 }

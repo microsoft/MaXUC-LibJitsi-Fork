@@ -4,7 +4,10 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.device;
+
+import static java.util.Collections.emptySet;
 
 import java.awt.*;
 import java.io.*;
@@ -2308,7 +2311,7 @@ public class MediaDeviceSession
             = getTranscodingDataSource(receiveStream);
 
         if (transcodingDataSource == null)
-            return Collections.emptySet();
+            return emptySet();
         else
         {
             return
@@ -2358,7 +2361,7 @@ public class MediaDeviceSession
             }
         }
         if (controls == null)
-            controls = Collections.emptySet();
+            controls = emptySet();
         return controls;
     }
 }

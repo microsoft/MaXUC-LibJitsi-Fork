@@ -1,9 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.util;
 
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.joining;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Class used to hash Personal Data before it is logged.
@@ -37,8 +42,7 @@ import java.util.Collection;
  */
 public class Hasher
 {
-
-    private static String sSalt;
+    private static String sSalt = "";
     private static MessageDigest sDigest;
     private static final Object sDigestLock = new Object();
 
@@ -52,65 +56,61 @@ public class Hasher
      *
      * @param salt - New salt (may overwrite an existing one if we are changing users).
      */
-    public static void setSalt(String salt)
+    public static void setSalt(final String salt)
     {
         sSalt = salt;
     }
 
     /**
-     * Convert the Collection of Strings into a String of comma separated hashes
+     * Convert the collection of Strings into a String of comma separated hashes
      * (see @Javadoc LogHasher.hash)
      */
-    public static String logHasher(Collection<String> plainlist)
+    public static String logCollectionHasher(final Collection<String> collection)
     {
-        StringBuilder list = new StringBuilder();
-        for (String plaintext : plainlist)
-        {
-            list.append(logHasher(plaintext));
-            list.append(",");
-        }
-
-        return list.toString();
+        return collection.stream()
+                .map(Hasher::logHasher)
+                .collect(joining(", "));
     }
 
     /**
      * Protect Personal Data by hashing (truncated SHA-224) it with the salt.  If it cannot hash then
      * replace with a redacted message for safety.
      */
-    public static String logHasher(Object object)
+    public static String logHasher(final Object object)
     {
-        return object != null ? logHasher(object.toString()) : null;
+        return Optional.ofNullable(object)
+                .map(Objects::toString)
+                .map(Hasher::logHasher)
+                .orElse("null");
     }
 
     /**
      * Protect Personal Data by hashing (truncated SHA-224) it with the salt.
      * If it cannot be hashed, then replace with a redacted message to ensure
      * privacy.
+     *
+     * Sometimes strings that we need to hash can be null or empty,
+     * particularly when running the UTs. Avoid NPEs and unnecessary work
+     * trying to hash empty strings by returning those strings unchanged.
+     *
+     * There is also no need to hash the following values: "null", "0", "1", "-1",
+     * "true", "false" (case-insensitive), and excessively hashing them decreases
+     * diagnosability. Ideally, we would check before passing these to the hasher,
+     * but as this problem is widespread it is easier to check here.
+     *
+     * We consider IP addresses, SSIDs, etc.
+     * to be Personal Data, and these data can be obtained by the client
+     * *before* we know what the user DN is (and thus before we have
+     * a salt). Simply return the hashed value, as we do not need a salt
+     * in this case.
      */
-    public static String logHasher(String plaintext)
+    public static String logHasher(final String plaintext)
     {
-        // Sometimes strings that we need to hash can be null or empty,
-        // particularly when running the UTs.  Avoid NPEs and unnecessary work
-        // trying to hash empty strings by returning those strings unchanged.
-        if (StringUtils.isNullOrEmpty(plaintext))
-        {
-            return plaintext;
-        }
-
-        // If there is a salt, then use it to hash the plaintext Personal Data.
-        if ((sSalt != null) && (!sSalt.isEmpty()))
-        {
-            return hashPersonalData(sSalt + plaintext);
-        }
-        else
-        {
-            // We consider IP addresses, SSIDs, etc.
-            // to be Personal Data, and these data can be obtained by the client
-            // *before* we know what the user DN is (and thus before we have
-            // a salt). Simply return the hashed value, as we do not need a salt
-            // in this case.
-            return hashPersonalData(plaintext);
-        }
+        return Optional.ofNullable(plaintext)
+                .filter(not(StringUtils::isNullOrEmptyOrBoolean))
+                .map(text -> sSalt + text)
+                .map(Hasher::hashPersonalData)
+                .orElse(plaintext);
     }
 
     /**
@@ -123,7 +123,7 @@ public class Hasher
      *
      * If it cannot be hashed then replace with a redacted message.
      */
-    public static String hashPersonalData(String plaintext)
+    public static String hashPersonalData(final String plaintext)
     {
         if (StringUtils.isNullOrEmpty(plaintext))
         {
@@ -131,9 +131,7 @@ public class Hasher
         }
 
         // Only take the first 10 characters of the hash string (that is a
-        // sufficient level of uniqueness). Append "(hash)" to ensure that this
-        // string cannot be re-hashed later if it passed into the above
-        // logHasher method to be used in a log string.
+        // sufficient level of uniqueness). Append "(hash)" for clarity.
         return sha224(plaintext, 10) + "(hash)";
     }
 
@@ -148,7 +146,7 @@ public class Hasher
      *
      * If it cannot be hashed then replace with a redacted message.
      */
-    public static String sha224(String plaintext, int maxLength)
+    public static String sha224(final String plaintext, final int maxLength)
     {
         if (StringUtils.isNullOrEmpty(plaintext))
         {
@@ -185,7 +183,7 @@ public class Hasher
         return hexToString(encodedHash, safeMaxLength);
     }
 
-    private static String hexToString(byte[] encodedHash, int safeMaxLength)
+    private static String hexToString(final byte[] encodedHash, final int safeMaxLength)
     {
         final char[] hexConversionArray = {'0','1','2','3','4','5','6','7',
                                            '8','9','a','b','c','d','e','f'};

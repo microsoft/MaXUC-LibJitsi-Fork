@@ -4,6 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.device;
 
 import java.lang.ref.*;
@@ -483,6 +484,15 @@ public class MacCoreaudioSystem
                 modelIdentifier
                     = CoreAudioDevice.getDeviceModelIdentifier(deviceUID);
                 locatorRemainder = deviceUID;
+            }
+
+            /*
+             * Virtual devices not supported.
+             */
+            if (transportType.equals("Virtual"))
+            {
+                logger.debug("Virtual audio device not supported: " + name);
+                continue;
             }
 
             /*

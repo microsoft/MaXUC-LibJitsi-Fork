@@ -4,6 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
+// Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.util.xml;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
@@ -41,11 +42,29 @@ public class XMLUtils
     private static final Logger logger = Logger.getLogger(XMLUtils.class);
 
     /**
+     * XML Features to prevent XXE attacks.
+     * See <a href="https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html">OWASP XML eXternal Entity injection prevention</a>
+     */
+    private static final String FEATURE_DISALLOW_DOCTYPE =
+            "http://apache.org/xml/features/disallow-doctype-decl";
+    private static final String FEATURE_EXTERNAL_GENERAL_ENTITIES =
+            "http://xml.org/sax/features/external-general-entities";
+    private static final String FEATURE_EXTERNAL_PARAMETER_ENTITIES =
+            "http://xml.org/sax/features/external-parameter-entities";
+    private static final String LOAD_EXTERNAL_DTD_FEATURE =
+            "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+
+    /**
      * The unicode replacement character, used as a substitute for characters
      * which would be invalid in an XML file.
      */
     private static final String UNICODE_REPLACEMENT_CHAR =
                                         new String(Character.toChars(0xfffd));
+
+    /**
+     * String returned when data passed to be written to the xml is <code>null</code>.
+     */
+    private static final String NULL_STRING = "null";
 
     /**
      * Extracts from node the attribute with the specified name.
@@ -134,6 +153,17 @@ public class XMLUtils
     }
 
     /**
+     * See {@link XMLUtils#sanitize(String)}. In the case where the
+     * input string is null, this returns {@link XMLUtils#NULL_STRING}.
+     */
+    public static String sanitizeNullable(String data)
+    {
+        return Optional.ofNullable(data)
+                .map(XMLUtils::sanitize)
+                .orElse(NULL_STRING);
+    }
+
+    /**
      * Sets an attribute on the given node, sanitizing the name and value of the
      * attribute by removing invalid characters.
      *
@@ -143,8 +173,8 @@ public class XMLUtils
      */
     public static void setAttribute(Element node, String name, String value)
     {
-        String sanitizedName = sanitize(name);
-        String sanitizedValue = sanitize(value);
+        String sanitizedName = sanitizeNullable(name);
+        String sanitizedValue = sanitizeNullable(value);
         node.setAttribute(sanitizedName, sanitizedValue);
     }
 
@@ -751,12 +781,12 @@ public class XMLUtils
      * Creates W3C Document.
      *
      * @return the W3C Document.
-     * @throws Exception is there is some error during operation.
+     * @throws ParserConfigurationException if there is some error during operation.
      */
     public static Document createDocument()
-            throws Exception
+            throws ParserConfigurationException
     {
-        return createDocument(null);
+        return getDocumentBuilderFactory().newDocumentBuilder().newDocument();
     }
 
     /**
@@ -769,10 +799,7 @@ public class XMLUtils
     public static Document createDocument(String xml)
             throws Exception
     {
-        DocumentBuilderFactory builderFactory =
-                DocumentBuilderFactory.newInstance();
-        builderFactory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = getDocumentBuilderFactory().newDocumentBuilder();
         if (!isNullOrEmpty(xml))
         {
             InputStream input = fromString(xml);
@@ -831,5 +858,36 @@ public class XMLUtils
             // Cleanup our children too
             cleanupWhitespace(childNode);
         }
+    }
+
+    public static DocumentBuilderFactory getDocumentBuilderFactory() throws ParserConfigurationException
+    {
+        DocumentBuilderFactory builderFactory =
+                DocumentBuilderFactory.newInstance();
+
+        // This is the PRIMARY defense against XML eXternal Entity injection (XXE).
+        // If DTDs (doctypes) are disallowed, almost all XML entity attacks are prevented.
+        builderFactory.setFeature(FEATURE_DISALLOW_DOCTYPE, true);
+        builderFactory.setFeature(FEATURE_EXTERNAL_GENERAL_ENTITIES, false);
+        builderFactory.setFeature(FEATURE_EXTERNAL_PARAMETER_ENTITIES, false);
+
+        // As stated in the Java documentation
+        // (see https://docs.oracle.com/en/java/javase/11/security/java-api-xml-processing-jaxp-security-guide.html#GUID-88B04BE2-35EF-4F61-B4FA-57A0E9102342)
+        // "Feature for Secure Processing (FSP)" is the central mechanism to help safeguard XML processing.
+        // It instructs XML processors, such as parsers, validators, and transformers, to try and process XML securely.
+        // Exists from JDK6.
+        builderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+        // Disable external DTDs as well
+        builderFactory.setFeature(LOAD_EXTERNAL_DTD_FEATURE, false);
+
+        // and these as well, per Timothy Morgan's 2014 paper: "XML Schema, DTD, and Entity Attacks"
+        // (see https://research.nccgroup.com/2014/05/19/xml-schema-dtd-and-entity-attacks-a-compendium-of-known-techniques/).
+        builderFactory.setXIncludeAware(false);
+        builderFactory.setExpandEntityReferences(false);
+
+        builderFactory.setNamespaceAware(true);
+
+        return builderFactory;
     }
 }
