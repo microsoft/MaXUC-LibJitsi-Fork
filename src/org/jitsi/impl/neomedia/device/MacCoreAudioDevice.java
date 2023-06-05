@@ -39,6 +39,7 @@ public class MacCoreAudioDevice
 
     public static native boolean isOutputDevice(String deviceUID);
 
+    @CustomAnnotations.Nullable
     public static String getTransportType(String deviceUID)
     {
         // Prevent an access violation.

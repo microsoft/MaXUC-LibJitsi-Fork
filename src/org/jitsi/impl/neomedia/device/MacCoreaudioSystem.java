@@ -489,7 +489,7 @@ public class MacCoreaudioSystem
             /*
              * Virtual devices not supported.
              */
-            if (transportType.equals("Virtual"))
+            if (transportType != null && transportType.equals("Virtual"))
             {
                 logger.debug("Virtual audio device not supported: " + name);
                 continue;
