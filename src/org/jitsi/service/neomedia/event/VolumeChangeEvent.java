@@ -53,18 +53,6 @@ public class VolumeChangeEvent
     }
 
     /**
-     * Gets the <tt>VolumeControl</tt> which is the source of the change
-     * notified about by this <tt>VolumeChangeEvent</tt>.
-     *
-     * @return the <tt>VolumeControl</tt> which is the source of the change
-     * notified about by this <tt>VolumeChangeEvent</tt>
-     */
-    public VolumeControl getSourceVolumeControl()
-    {
-        return (VolumeControl) getSource();
-    }
-
-    /**
      * Gets the volume level notified about by this <tt>VolumeChangeEvent</tt>.
      *
      * @return the volume level notified about by this

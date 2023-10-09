@@ -55,16 +55,6 @@ public class ControlTransformInputStream
     }
 
     /**
-     * Removes an <tt>RTCPFeedbackListener</tt>.
-     *
-     * @param listener the <tt>RTCPFeedbackListener</tt> to remove
-     */
-    public void removeRTCPFeedbackListener(RTCPFeedbackListener listener)
-    {
-        listeners.remove(listener);
-    }
-
-    /**
      * Copies the content of the most recently received packet into
      * <tt>inBuffer</tt>.
      *

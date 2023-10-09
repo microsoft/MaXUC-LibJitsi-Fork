@@ -474,29 +474,6 @@ public class BasicVolumeControl
     }
 
     /**
-     * Removes a <tt>VolumeChangeListener</tt>.
-     *
-     * @param listener the volume change listener to be removed.
-     */
-    @Override
-    public void removeVolumeChangeListener(VolumeChangeListener listener)
-    {
-        synchronized (volumeChangeListeners)
-        {
-            Iterator<WeakReference<VolumeChangeListener>> i
-                = volumeChangeListeners.iterator();
-
-            while (i.hasNext())
-            {
-                VolumeChangeListener l = i.next().get();
-
-                if ((l == null) || l.equals(listener))
-                    i.remove();
-            }
-        }
-    }
-
-    /**
      * Set the gain in decibels. Setting the gain to 0.0 (the default) implies
      * that the audio signal is neither amplified nor attenuated. Positive
      * values amplify the audio signal and negative values attenuate the signal.

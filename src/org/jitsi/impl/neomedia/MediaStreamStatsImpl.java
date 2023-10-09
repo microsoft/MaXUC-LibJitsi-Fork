@@ -76,11 +76,6 @@ public class MediaStreamStatsImpl
     private long[] nbPackets = {0, 0};
 
     /**
-     * Statistics (min/max/avg) about jitter in both directions.
-     */
-    private SummaryStatistics[] jitterStats = { new SynchronizedSummaryStatistics(),  new SynchronizedSummaryStatistics()};
-
-    /**
      * The last number of sent packets when the last feedback has been received.
      * This counter is used to compute the upload loss rate.
      */
@@ -507,27 +502,6 @@ public class MediaStreamStatsImpl
     }
 
     /**
-     * @return the total percentage packet loss in the download direction
-     */
-    @Override
-    public float getDownloadTotalPercentLost()
-    {
-        long downloadedPackets = getDownloadTotalPackets();
-        downloadedPackets = Math.max(downloadedPackets, 1);
-        return (nbLost[StreamDirection.DOWNLOAD.ordinal()] / downloadedPackets) * 100;
-    }
-
-    /**
-     * @return the total percentage packet loss in the upload direction
-     */
-    @Override
-    public float getUploadTotalPercentLost() {
-        long uploadedPackets = getUploadTotalPackets();
-        uploadedPackets = Math.max(uploadedPackets, 1);
-        return (nbLost[StreamDirection.UPLOAD.ordinal()] / uploadedPackets) * 100;
-    }
-
-    /**
      * @return the total number of packets downloaded
      */
     @Override
@@ -594,8 +568,7 @@ public class MediaStreamStatsImpl
      *
      * @return the last jitter average computed (in ms).
      */
-    @Override
-    public double getDownloadJitterMs()
+    private double getDownloadJitterMs()
     {
         return this.getJitterMs(StreamDirection.DOWNLOAD);
     }
@@ -646,77 +619,6 @@ public class MediaStreamStatsImpl
         return
             (jitterRTPTimestampUnits[streamDirection.ordinal()] / clockRate)
                 * 1000.0;
-    }
-
-    /**
-     * Updates the jitter stream stats with the new feedback sent.
-     *
-     * @param feedback The last RTCP feedback sent by the MediaStream.
-     * @param streamDirection The stream direction (DOWNLOAD or UPLOAD) of the
-     * stream from which this function retrieve the jitter.
-     */
-    private void updateJitterRTPTimestampUnits(
-            RTCPFeedback feedback,
-            StreamDirection streamDirection)
-    {
-        // Updates the download jitter in RTP timestamp units.
-        // There is no need to compute a jitter average, since (cf. RFC3550,
-        // section 6.4.1 SR: Sender Report RTCP Packet, subsection interarrival
-        // jitter: 32 bits) the value contained in the RTCP sender report packet
-        // contains a mean deviation of the jitter.
-        this.jitterRTPTimestampUnits[streamDirection.ordinal()] =
-            feedback.getJitter();
-
-        jitterStats[streamDirection.ordinal()].addValue(getJitterMs(streamDirection));
-    }
-
-    /**
-     * Updates this stream stats with the new feedback sent.
-     *
-     * @param feedback The last RTCP feedback sent by the MediaStream.
-     */
-    @Override
-    public void updateNewSentFeedback(RTCPFeedback feedback)
-    {
-        updateJitterRTPTimestampUnits(feedback, StreamDirection.DOWNLOAD);
-
-        // No need to update the download loss as we have a more accurate value
-        // in the global reception stats, which are updated for each new packet
-        // received.
-    }
-
-    /**
-     * Updates this stream stats with the new feedback received.
-     *
-     * @param feedback The last RTCP feedback received by the MediaStream.
-     */
-    @Override
-    public void updateNewReceivedFeedback(RTCPFeedback feedback)
-    {
-        StreamDirection streamDirection = StreamDirection.UPLOAD;
-
-        updateJitterRTPTimestampUnits(feedback, streamDirection);
-
-        // Updates the loss rate with the RTCP sender report feedback, since
-        // this is the only information source available for the upalod stream.
-        long uploadNewNbRecv = feedback.getXtndSeqNum();
-        long newNbLost =
-            feedback.getNumLost() - nbLost[streamDirection.ordinal()];
-        long nbSteps = uploadNewNbRecv - uploadFeedbackNbPackets;
-
-        updateNbLoss(streamDirection, newNbLost, nbSteps);
-
-        // Updates the upload loss counters.
-        uploadFeedbackNbPackets = uploadNewNbRecv;
-
-        // Computes RTT.
-        rttMs = computeRTTInMs(feedback);
-
-        // Assume RTT information arrives at regular intervals.
-        if (rttMs != -1)
-        {
-            rttMsSummary.addValue(rttMs);
-        }
     }
 
     /**
@@ -1008,79 +910,6 @@ public class MediaStreamStatsImpl
     }
 
     /**
-     * Computes the RTT with the data (LSR and DLSR) contained in the last
-     * RTCP Sender Report (RTCP feedback). This RTT computation is based on
-     * RFC3550, section 6.4.1, subsection "delay since last SR (DLSR): 32
-     * bits".
-     *
-     * @param feedback The last RTCP feedback received by the MediaStream.
-     *
-     * @return The RTT in milliseconds, or -1 if the RTT is not computable.
-     */
-    private long computeRTTInMs(RTCPFeedback feedback)
-    {
-        // Computes RTT.
-        long currentTime = System.currentTimeMillis();
-        long DLSR = feedback.getDLSR();
-        long LSR = feedback.getLSR();
-
-        // If the peer sending us the sender report has at least received on
-        // sender report from our side, then computes the RTT.
-        if(DLSR != 0 && LSR != 0)
-        {
-            long LSRs = LSR >> 16;
-            long LSRms = ((LSR & 0xffff) * 1000) / 0xffff;
-            long DLSRs = DLSR / 0xffff;
-            long DLSRms = ((DLSR & 0xffff) *1000) / 0xffff;
-            long currentTimeS = (currentTime / 1000) & 0x0000ffff;
-            long currentTimeMs = (currentTime % 1000);
-
-            long rttS = currentTimeS - DLSRs - LSRs;
-            long rttMs = currentTimeMs - DLSRms - LSRms;
-
-            long computedRTTms = (rttS * 1000) + rttMs;
-
-            // If the RTT is greater than a minute there might be a bug. Thus we
-            // log the info to see the source of this error.
-            if (computedRTTms > 60000)
-            {
-                logger.info("RTT computation seems to be wrong ("
-                        + computedRTTms + "> 60 seconds):"
-
-                        + "\n\tcurrentTime: " + currentTime
-                        + " (" + Long.toHexString(currentTime) + ")"
-                        + "\n\tDLSR: " + DLSR
-                        + " (" + Long.toHexString(DLSR) + ")"
-                        + "\n\tLSR: " + LSR
-                        + " (" + Long.toHexString(LSR) + ")"
-
-                        + "\n\n\tcurrentTimeS: " + currentTimeS
-                        + " (" + Long.toHexString(currentTimeS) + ")"
-                        + "\n\tDLSRs: " + DLSRs
-                        + " (" + Long.toHexString(DLSRs) + ")"
-                        + "\n\tLSRs: " + LSRs
-                        + " (" + Long.toHexString(LSRs) + ")"
-                        + "\n\trttS: " + rttS
-                        + " (" + Long.toHexString(rttS) + ")"
-
-                        + "\n\n\tcurrentTimeMs: " + currentTimeMs
-                        + " (" + Long.toHexString(currentTimeMs) + ")"
-                        + "\n\tDLSRms: " + DLSRms
-                        + " (" + Long.toHexString(DLSRms) + ")"
-                        + "\n\tLSRms: " + LSRms
-                        + " (" + Long.toHexString(LSRms) + ")"
-                        + "\n\trttMs: " + rttMs
-                        + " (" + Long.toHexString(rttMs) + ")"
-                        );
-            }
-
-            return computedRTTms;
-        }
-        // Else the RTT can not be computed yet.
-        return -1;
-    }
-
-    /**
      * Returns the RTT computed with the RTCP feedback (cf. RFC3550, section
      * 6.4.1, subsection "delay since last SR (DLSR): 32 bits").
      *
@@ -1091,16 +920,6 @@ public class MediaStreamStatsImpl
     public long getRttMs()
     {
         return this.rttMs;
-    }
-
-    /**
-     * @return The average of the RTT computed from RTCP. Returns -1 if the RTT
-     * has not been computed yet.
-     */
-    @Override
-    public double getAverageRttMs()
-    {
-        return rttMsSummary.getMean();
     }
 
     /**
@@ -1327,39 +1146,4 @@ public class MediaStreamStatsImpl
                 getNbDiscardedFull());
     }
 
-    @Override
-    public double getUploadJitterMin()
-    {
-        return jitterStats[StreamDirection.UPLOAD.ordinal()].getMin();
-    }
-
-    @Override
-    public double getUploadJitterMax()
-    {
-        return jitterStats[StreamDirection.UPLOAD.ordinal()].getMax();
-    }
-
-    @Override
-    public double getUploadJitterMean()
-    {
-        return jitterStats[StreamDirection.UPLOAD.ordinal()].getMean();
-    }
-
-    @Override
-    public double getDownloadJitterMin()
-    {
-        return jitterStats[StreamDirection.DOWNLOAD.ordinal()].getMin();
-    }
-
-    @Override
-    public double getDownloadJitterMax()
-    {
-        return jitterStats[StreamDirection.DOWNLOAD.ordinal()].getMax();
-    }
-
-    @Override
-    public double getDownloadJitterMean()
-    {
-        return jitterStats[StreamDirection.DOWNLOAD.ordinal()].getMean();
-    }
 }

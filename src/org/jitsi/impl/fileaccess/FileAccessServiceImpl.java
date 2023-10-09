@@ -97,30 +97,6 @@ public class FileAccessServiceImpl implements FileAccessService
     }
 
     /**
-     * Returns the temporary directory.
-     *
-     * @return the created temporary directory
-     * @throws IOException if the temporary directory cannot not be created
-     */
-    @Override
-    public File getTemporaryDirectory() throws IOException
-    {
-        File file = getTemporaryFile();
-
-        if (!file.delete())
-        {
-            throw new IOException("Could not create temporary directory, "
-                    + "because: could not delete temporary file.");
-        }
-        if (!file.mkdirs())
-        {
-            throw new IOException("Could not create temporary directory");
-        }
-
-        return file;
-    }
-
-    /**
      * This method returns a file specific to the current Computer user. It may not
      * exist, but it is guaranteed that you will have the sufficient rights to
      * create it, and that its parent directory exists.
@@ -262,7 +238,7 @@ public class FileAccessServiceImpl implements FileAccessService
             {
                 throw new IOException("Could not create directory "
                         + "because: A file exists with this name:"
-                        + dir.getAbsolutePath());
+                        + dir.getName());
             }
         }
         else
@@ -274,37 +250,6 @@ public class FileAccessServiceImpl implements FileAccessService
         }
 
         return dir;
-    }
-
-    /**
-     * This method creates a directory specific to the current Computer user.
-     *
-     * {@link #getPrivatePersistentDirectory(String)}
-     *
-     * @param dirNames
-     *            The name of the private directory you wish to access.
-     * @return The created directory.
-     * @throws SecurityException Thrown if we fail to access or create the
-     * directory due to permissions issues
-     * @throws IOException
-     *             Thrown if there is no suitable location for the persistent
-     *             directory, or creation of directory failed.
-     */
-    @Override
-    public File getPrivatePersistentDirectory(String[] dirNames)
-        throws IOException, SecurityException
-    {
-        StringBuilder dirName = new StringBuilder();
-        for (int i = 0; i < dirNames.length; i++)
-        {
-            if (i > 0)
-            {
-                dirName.append(File.separatorChar);
-            }
-            dirName.append(dirNames[i]);
-        }
-
-        return getPrivatePersistentDirectory(dirName.toString());
     }
 
     /**
@@ -431,17 +376,17 @@ public class FileAccessServiceImpl implements FileAccessService
             if (!homedirFile.exists())
             {
                 logger.debug("Creating home directory : "
-                        + homedirFile.getAbsolutePath());
+                        + homedirFile.getName());
                 if (!homedirFile.mkdirs())
                 {
                     String message = "Could not create the home directory : "
-                            + homedirFile.getAbsolutePath();
+                            + homedirFile.getName();
 
                     logger.debug(message);
                     throw new IOException(message);
                 }
                 logger.debug("Home directory created : "
-                        + homedirFile.getAbsolutePath());
+                        + homedirFile.getName());
             }
             else if (!homedirFile.canWrite())
             {
@@ -453,7 +398,7 @@ public class FileAccessServiceImpl implements FileAccessService
                 if (!file.getParentFile().mkdirs())
                 {
                     String message = "Could not create the parent directory : "
-                        + homedirFile.getAbsolutePath();
+                        + homedirFile.getName();
 
                     logger.debug(message);
                     throw new IOException(message);
@@ -479,17 +424,4 @@ public class FileAccessServiceImpl implements FileAccessService
         return new File(getSystemProperty("user.home"), "Downloads");
     }
 
-    /**
-     * Creates a failsafe transaction which can be used to safely store
-     * informations into a file.
-     *
-     * @param file The file concerned by the transaction, null if file is null.
-     *
-     * @return A new failsafe transaction related to the given file.
-     */
-    @Override
-    public FailSafeTransaction createFailSafeTransaction(File file)
-    {
-        return (file == null) ? null : new FailSafeTransactionImpl(file);
-    }
 }

@@ -360,27 +360,6 @@ public abstract class AbstractRTPConnector
     }
 
     /**
-     * Removes a target from our session. If a target is removed, there will be
-     * no data sent to that address.
-     *
-     * @param target Destination target to be removed
-     */
-    public void removeTarget(SessionAddress target)
-    {
-        if (controlOutputStream != null)
-            controlOutputStream
-                .removeTarget(
-                    target.getControlAddress(),
-                    target.getControlPort());
-
-        if (dataOutputStream != null)
-            dataOutputStream
-                .removeTarget(
-                    target.getDataAddress(),
-                    target.getDataPort());
-    }
-
-    /**
      * Remove all stream targets. After this operation is done. There will be
      * no targets receiving data, so no data will be sent.
      */

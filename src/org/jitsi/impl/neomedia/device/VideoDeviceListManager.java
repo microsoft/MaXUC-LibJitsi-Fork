@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.device;
 
-import org.jitsi.util.*;
-
 /**
  * Manages the list of active (currently plugged-in) video devices and manages
  * user preferences between all known devices (previously and actually
@@ -11,11 +9,6 @@ import org.jitsi.util.*;
 public class VideoDeviceListManager
     extends DeviceListManager
 {
-    /**
-     * The <tt>Logger</tt> used by this instance for logging output.
-     */
-    private static Logger logger = Logger.getLogger(VideoDeviceListManager.class);
-
     /**
      * The property of the capture devices.
      */

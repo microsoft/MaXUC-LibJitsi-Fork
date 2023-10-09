@@ -127,32 +127,11 @@ public interface MediaStreamStats
     double getUploadRateKiloBitPerSec();
 
     /**
-     * Returns the jitter average of this download stream.
-     *
-     * @return the last jitter average computed (in ms).
-     */
-    double getDownloadJitterMs();
-
-    /**
      * Returns the jitter average of this upload stream.
      *
      * @return the last jitter average computed (in ms).
      */
     double getUploadJitterMs();
-
-    /**
-     * Updates this stream stats with the new feedback sent.
-     *
-     * @param feedback The last RTCP feedback sent by the MediaStream.
-     */
-    void updateNewSentFeedback(RTCPFeedback feedback);
-
-    /**
-     * Updates this stream stats with the new feedback received.
-     *
-     * @param feedback The last RTCP feedback received by the MediaStream.
-     */
-    void updateNewReceivedFeedback(RTCPFeedback feedback);
 
     /**
      * Returns the RTT computed with the RTCP feedback (cf. RFC3550, section
@@ -268,49 +247,4 @@ public interface MediaStreamStats
      */
     long getUploadTotalPackets();
 
-    /**
-     * @return The average of the RTT computed from RTCP. Returns -1 if the RTT
-     * has not been computed yet.
-     */
-    double getAverageRttMs();
-
-    /**
-     * @return the percentage of lost packets in the upload direction.
-     */
-    float getUploadTotalPercentLost();
-
-    /**
-     * @return the percentage of lost packets in the download direction.
-     */
-    float getDownloadTotalPercentLost();
-
-    /**
-     * @return the min upload jitter.
-     */
-    double getUploadJitterMin();
-
-    /**
-     * @return the max upload jitter.
-     */
-    double getUploadJitterMax();
-
-    /**
-     * @return the mean upload jitter.
-     */
-    double getUploadJitterMean();
-
-    /**
-     * @return the min download jitter.
-     */
-    double getDownloadJitterMin();
-
-    /**
-     * @return the max download jitter.
-     */
-    double getDownloadJitterMax();
-
-    /**
-     * @return the mean download jitter.
-     */
-    double getDownloadJitterMean();
 }

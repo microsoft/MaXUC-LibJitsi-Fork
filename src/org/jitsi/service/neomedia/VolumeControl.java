@@ -81,15 +81,6 @@ public interface VolumeControl
     float getVolume();
 
     /**
-     * Removes a <tt>VolumeChangeListener</tt> to no longer be notified about
-     * changes in the volume level of this instance.
-     *
-     * @param listener the <tt>VolumeChangeListener</tt> to no longer be
-     * notified about changes in the volume level of this instance
-     */
-    void removeVolumeChangeListener(VolumeChangeListener listener);
-
-    /**
      * Mutes current sound playback.
      *
      * @param mute mutes/unmutes playback.

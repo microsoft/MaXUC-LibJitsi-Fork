@@ -55,12 +55,6 @@ public interface PacketLoggingService
     }
 
     /**
-     * Checks is logging globally enabled for the service.
-     * @return is logging enabled.
-     */
-    boolean isLoggingEnabled();
-
-    /**
      * Checks is logging globally enabled for and is it currently
      * available fo the given protocol.
      *.

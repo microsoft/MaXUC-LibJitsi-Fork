@@ -211,41 +211,6 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Stores the format preferences in this instance in the given <tt>Map</tt>,
-     * using <tt>prefix</tt> as a prefix to the key.
-     * Entries in the format (prefix+formatName, formatPriority) will be added
-     * to <tt>properties</tt>, one for each available format.
-     * Note that a "." is not automatically added to <tt>prefix</tt>.
-     *
-     * @param properties The <tt>Map</tt> where entries will be added.
-     * @param prefix The prefix to use.
-     */
-    public void storeProperties(Map<String, String> properties, String prefix)
-    {
-        for(MediaType mediaType : MediaType.values())
-        {
-            for(MediaFormat mediaFormat: getAllEncodings(mediaType))
-            {
-                properties.put(
-                        prefix + getEncodingPreferenceKey(mediaFormat),
-                        Integer.toString(getPriority(mediaFormat)));
-            }
-        }
-    }
-
-    /**
-     * Stores the format preferences in this instance in the given <tt>Map</tt>.
-     * Entries in the format (formatName, formatPriority) will be added to
-     * <tt>properties</tt>, one for each available format.
-     *
-     * @param properties The <tt>Map</tt> where entries will be added.
-     */
-    public void storeProperties(Map<String,String> properties)
-    {
-        storeProperties(properties, "");
-    }
-
-    /**
      * Parses a <tt>Map<String, String></tt> and updates the format preferences
      * according to it. Does not use a prefix.
      *

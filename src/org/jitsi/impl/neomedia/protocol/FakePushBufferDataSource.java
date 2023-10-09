@@ -6,15 +6,15 @@
  */
 package org.jitsi.impl.neomedia.protocol;
 
-import java.io.*;
+import static org.jitsi.impl.neomedia.protocol.FakePushBufferDataSource.FakePushBufferStream;
 
 import javax.media.*;
 import javax.media.control.*;
-import javax.media.protocol.*;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
 
-import org.jitsi.impl.neomedia.*;
+import org.jitsi.impl.neomedia.RTPTranslatorImpl;
 import org.jitsi.impl.neomedia.jmfext.media.protocol.*;
-import org.jitsi.impl.neomedia.protocol.FakePushBufferDataSource.FakePushBufferStream;
 
 /**
  * Implements {@link PushBufferDataSource} for the purposes of

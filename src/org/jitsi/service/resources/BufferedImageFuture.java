@@ -5,8 +5,6 @@ import java.awt.*;
 import java.awt.image.*;
 import java.util.concurrent.*;
 
-import javax.swing.*;
-
 /**
  * This represents a java.awt.image.BufferedImage which may not be available yet
  */
@@ -38,26 +36,15 @@ public interface BufferedImageFuture extends Future<BufferedImage>
     // Helper methods
 
     /**
-     * Set the image on the frame once retrieved.
-     */
-    void addToFrame(JFrame frame);
-
-    /**
      * Set the image on the window once retrieved.
      */
     void addToWindow(Window window);
 
-    BufferedImageFuture getScaledInstance(int width, int height, int hint);
     ImageIconFuture getScaledEllipticalIcon(int width, int height);
     ImageIconFuture getScaledRoundedIcon(int width, int height);
     BufferedImageFuture scaleImageWithinBounds(int width, int height);
     ImageIconFuture getScaledCircularIcon(int width, int height);
     ImageIconFuture scaleIconWithinBounds(int width, int height);
-
-    /**
-     * @return a faded out version of this image.
-     */
-    BufferedImageFuture fade();
 
     /**
      * Returns this image in bytes. Causes this image to resolved,

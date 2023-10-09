@@ -371,8 +371,6 @@ public class VideoMediaDeviceSession
 
         if (captureDevice != null)
         {
-            MediaLocator locator = captureDevice.getLocator();
-            String protocol = (locator == null) ? null : locator.getProtocol();
             float frameRate;
             DeviceConfiguration deviceConfig
                 = NeomediaServiceUtils
@@ -723,47 +721,6 @@ public class VideoMediaDeviceSession
                         visualComponent,
                         VideoEvent.LOCAL,
                         false);
-            }
-        }
-    }
-
-    /**
-     * Disposes of the local visual <tt>Component</tt> of the local peer.
-     *
-     * @param component the local visual <tt>Component</tt> of the local peer to
-     * dispose of
-     */
-    protected void disposeLocalVisualComponent(Component component)
-    {
-        if (component != null)
-        {
-            /*
-             * Desktop streaming does not use a Player but a Canvas with its
-             * name equal to the value of DESKTOP_STREAMING_ICON.
-             */
-            if (DESKTOP_STREAMING_ICON.equals(component.getName()))
-            {
-                fireVideoEvent(
-                        VideoEvent.VIDEO_REMOVED, component, VideoEvent.LOCAL,
-                        false);
-            }
-            else
-            {
-                Player localPlayer;
-
-                synchronized (localPlayerSyncRoot)
-                {
-                    localPlayer = this.localPlayer;
-                }
-                if (localPlayer != null)
-                {
-                    Component localPlayerVisualComponent
-                        = getVisualComponent(localPlayer);
-
-                    if ((localPlayerVisualComponent == null)
-                            || (localPlayerVisualComponent == component))
-                        disposeLocalPlayer(localPlayer);
-                }
             }
         }
     }

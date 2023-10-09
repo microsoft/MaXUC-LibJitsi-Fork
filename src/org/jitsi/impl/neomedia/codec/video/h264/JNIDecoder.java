@@ -256,7 +256,7 @@ public class JNIDecoder
         // Set up packet data buffer
         final long packetBufferSize = srcLength + AV_INPUT_BUFFER_PADDING_SIZE;
         int returnCode;
-        try (final BytePointer packetBuffer = new BytePointer(av_malloc(packetBufferSize)).limit(packetBufferSize)) {
+        try (BytePointer packetBuffer = new BytePointer(av_malloc(packetBufferSize)).limit(packetBufferSize)) {
             // Note: put() requires that we set the limit on the BytePointer.
             packetBuffer.put(src, 0, srcLength);
             final AVPacket pkt = av_packet_alloc();

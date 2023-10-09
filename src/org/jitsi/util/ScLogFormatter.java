@@ -22,8 +22,6 @@ import java.util.logging.*;
 public class ScLogFormatter
     extends java.util.logging.Formatter
 {
-    static long startTime = System.currentTimeMillis();
-
     private static String lineSeparator = System.getProperty("line.separator");
     private static DecimalFormat twoDigFmt = new DecimalFormat("00");
     private static DecimalFormat threeDigFmt = new DecimalFormat("000");

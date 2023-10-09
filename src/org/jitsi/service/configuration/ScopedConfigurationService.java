@@ -417,13 +417,6 @@ public interface ScopedConfigurationService
         throws IOException;
 
     /**
-     * Removes all locally stored properties leaving an empty configuration.
-     * Implementations that use a file for storing properties may simply delete
-     * it when this method is called.
-     */
-    void purgeStoredConfiguration();
-
-    /**
      * Returns the name of the directory where Jitsi is to store user
      * specific data such as configuration files, message and call history
      * as well as is bundle repository.
@@ -444,16 +437,6 @@ public interface ScopedConfigurationService
      * as well as is bundle repository.
      */
     String getScHomeDirLocation();
-
-    /**
-     * Use with caution!
-     * Returns the name of the configuration file currently
-     * used. Placed in HomeDirLocation/HomeDirName
-     * {@link #getScHomeDirLocation()}
-     * {@link #getScHomeDirName()}
-     * @return  the name of the configuration file currently used.
-     */
-    String getConfigurationFilename();
 
     /**
      * Find the global configuration.

@@ -631,7 +631,7 @@ public class JNIEncoder
         avctx.thread_count(1);
 
         // time_base should be 1 / frame rate
-        try (final AVRational timeBase = new AVRational().num(1).den(frameRate)) {
+        try (AVRational timeBase = new AVRational().num(1).den(frameRate)) {
             avctx.time_base(timeBase);
         }
 

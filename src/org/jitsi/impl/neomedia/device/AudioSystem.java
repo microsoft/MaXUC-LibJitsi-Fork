@@ -85,8 +85,6 @@ public abstract class AudioSystem
      */
     public static final int FEATURE_BLOCKING_RENDERER_OPTION = 16;
 
-    public static final String LOCATOR_PROTOCOL_AUDIORECORD = "audiorecord";
-
     public static final String LOCATOR_PROTOCOL_JAVASOUND = "javasound";
 
     /**
@@ -94,8 +92,6 @@ public abstract class AudioSystem
      * <tt>CaptureDeviceInfo</tt>s contributed by <tt>MacCoreaudioSystem</tt>.
      */
     public static final String LOCATOR_PROTOCOL_MACCOREAUDIO = "maccoreaudio";
-
-    public static final String LOCATOR_PROTOCOL_OPENSLES = "opensles";
 
     public static final String LOCATOR_PROTOCOL_PORTAUDIO = "portaudio";
 

@@ -35,15 +35,4 @@ public class XMLException
     {
         super (message, cause);
     }
-
-    /**
-       * Constructs a new XMLException with the specified detail message.
-       *
-       * @param message a message specifying the reason that caused the
-       * exception.
-       */
-    public XMLException(String message)
-    {
-        super(message);
-    }
 }

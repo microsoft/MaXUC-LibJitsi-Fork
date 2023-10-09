@@ -168,23 +168,6 @@ public class AudioMediaStreamImpl
     }
 
     /**
-     * Delivers the <tt>audioLevels</tt> map to whoever's interested. This
-     * method is meant for use primarily by the transform engine handling
-     * incoming RTP packets (currently <tt>CsrcTransformEngine</tt>).
-     *
-     * @param audioLevels a array mapping CSRC IDs to audio levels in
-     * consecutive elements.
-     */
-    public void audioLevelsReceived(long[] audioLevels)
-    {
-        CsrcAudioLevelListener csrcAudioLevelListener
-            = this.csrcAudioLevelListener;
-
-        if (csrcAudioLevelListener != null)
-            csrcAudioLevelListener.audioLevelsReceived(audioLevels);
-    }
-
-    /**
      * Releases the resources allocated by this instance in the course of its
      * execution and prepares it to be garbage collected.
      *
@@ -379,29 +362,6 @@ public class AudioMediaStreamImpl
     }
 
     /**
-     * Returns the last audio level that was measured by the underlying device
-     * session for the specified <tt>ssrc</tt> (where <tt>ssrc</tt> could also
-     * correspond to our local sync source identifier).
-     *
-     * @param ssrc the SSRC ID whose last measured audio level we'd like to
-     * retrieve.
-     *
-     * @return the audio level that was last measured for the specified
-     * <tt>ssrc</tt> or <tt>-1</tt> if no level has been cached for that ID.
-     */
-    public int getLastMeasuredAudioLevel(long ssrc)
-    {
-        AudioMediaDeviceSession devSession = getDeviceSession();
-
-        if (devSession == null)
-            return -1;
-        else if (ssrc == getLocalSourceID())
-            return devSession.getLastMeasuredLocalUserAudioLevel();
-        else
-            return devSession.getLastMeasuredAudioLevel(ssrc);
-    }
-
-    /**
      * The priority of the audio is 3, which is meant to be higher than
      * other threads and higher than the video one.
      * @return audio priority.
@@ -519,23 +479,6 @@ public class AudioMediaStreamImpl
                 deviceSession.setLocalUserAudioLevelListener(
                         localUserAudioLevelListener);
             }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setOutputVolumeControl(VolumeControl outputVolumeControl)
-    {
-        if (this.outputVolumeControl != outputVolumeControl)
-        {
-            this.outputVolumeControl = outputVolumeControl;
-
-            AudioMediaDeviceSession deviceSession = getDeviceSession();
-
-            if (deviceSession != null)
-                deviceSession.setOutputVolumeControl(this.outputVolumeControl);
         }
     }
 

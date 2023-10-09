@@ -81,7 +81,9 @@ public class MediaUtils
 
     /**
      * H.264 profile level IDC 1.1 (default for Accession Mobile).
-     * Supports video resolution up to 352x288 (note we're ignoring frame rate).
+     * Supports video resolution up to 352x264 (note we're ignoring frame rate).
+     * Also, note that the max resolution of IDC 1.1 is 352x288,
+     * but we've lowered the height to match the aspect ratio of Mobile resolution for IDC 1.1 (which is set to 320×240).
      * Profiles below this level support video resolution up to 176x144.
      */
     private static final byte H264_PROFILE_IDC_1_1 = 11;
@@ -843,8 +845,8 @@ public class MediaUtils
         }
         else if (idc < H264_PROFILE_IDC_2_1)
         {
-            // Less than level 2.1 - max dimension is 352x288
-            dimension = new java.awt.Dimension(352, 288);
+            // Less than level 2.1 - max dimension is 352x264
+            dimension = new java.awt.Dimension(352, 264);
         }
         else if (idc < H264_PROFILE_IDC_2_2)
         {

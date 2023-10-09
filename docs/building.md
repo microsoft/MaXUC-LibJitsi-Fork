@@ -29,9 +29,9 @@ The dependencies can be downloaded from a Maven repository:
 ## Offline build
 Another way to build without Maven is to manually put libraries files:
 1. Provide required libraries in `lib` folder (check `ivy.xml` for JAR versions):
-   - bcpkix-jdk15on.jar - *Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs*
-   - bcprov-jdk15on.jar - *Bouncy Castle Provider*
-   - bcutil-jdk15on.jar - *Bouncy Castle ASN.1 Extension and Utility APIs*
+   - bcpkix-jdk18on.jar - *Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs*
+   - bcprov-jdk18on.jar - *Bouncy Castle Provider*
+   - bcutil-jdk18on.jar - *Bouncy Castle ASN.1 Extension and Utility APIs*
    - commons-lang3.jar - *Apache Commons Lang*
    - commons-math3.jar - *Apache Commons Math*
    - guava.jar - *Guava: Google Core Libraries For Java*

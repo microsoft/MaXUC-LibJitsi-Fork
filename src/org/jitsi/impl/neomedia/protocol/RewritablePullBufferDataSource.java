@@ -97,16 +97,6 @@ public class RewritablePullBufferDataSource
     }
 
     /**
-     * Get wrapped DataSource.
-     *
-     * @return wrapped DataSource
-     */
-    public PullBufferDataSource getWrappedDataSource()
-    {
-        return dataSource;
-    }
-
-    /**
      * Implements {@link PullBufferDataSource#getStreams()}. Wraps the streams
      * of the wrapped <tt>PullBufferDataSource</tt> into
      * <tt>MutePullBufferStream</tt> instances in order to provide mute support

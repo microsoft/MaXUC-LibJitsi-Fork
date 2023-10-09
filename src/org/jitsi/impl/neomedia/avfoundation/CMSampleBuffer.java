@@ -25,23 +25,4 @@ public class CMSampleBuffer
     {
         super(ptr);
     }
-
-    public byte[] bytesForAllSamples()
-    {
-        return bytesForAllSamples(getPtr());
-    }
-
-    private static native byte[] bytesForAllSamples(long ptr);
-
-    public CMFormatDescription formatDescription()
-    {
-        long formatDescriptionPtr = formatDescription(getPtr());
-
-        return
-            (formatDescriptionPtr == 0)
-                ? null
-                : new CMFormatDescription(formatDescriptionPtr);
-    }
-
-    private static native long formatDescription(long ptr);
 }

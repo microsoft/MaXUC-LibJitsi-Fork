@@ -92,19 +92,6 @@ public class HardwareVolumeControl
         return MAX_HARDWARE_POWER / 2;
     }
 
-    /**
-     * Returns the reference volume level for computing the gain.
-     *
-     * @return The reference volume level for computing the gain.
-     */
-    protected static float getGainReferenceLevel()
-    {
-        // Starts to activate the gain (software amplification), only once the
-        // microphone sensibility is sets to its maximum (hardware
-        // amplification).
-        return MAX_HARDWARE_POWER;
-    }
-
     @Override
     protected void updateHardwareVolume()
     {

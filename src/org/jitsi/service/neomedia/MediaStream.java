@@ -156,14 +156,6 @@ public interface MediaStream
     InetSocketAddress getRemoteDataAddress();
 
     /**
-     * Returns the transport protocol used by the streams.
-     *
-     * @return the transport protocol (UDP or TCP) used by the streams. null if
-     * the stream connector is not instanciated.
-     */
-    StreamConnector.Protocol getTransportProtocol();
-
-    /**
      * Adds a property change listener to this stream so that it would be
      * notified upon property change events like for example an SSRC ID which
      * becomes known.
@@ -272,15 +264,6 @@ public interface MediaStream
      * <tt>extensionID</tt>.
      */
     void addRTPExtension(byte extensionID, RTPExtension rtpExtension);
-
-    /**
-     * Returns a map containing all currently active <tt>RTPExtension</tt>s in
-     * use by this stream.
-     *
-     * @return a map containing all currently active <tt>RTPExtension</tt>s in
-     * use by this stream.
-     */
-    Map<Byte, RTPExtension> getActiveRTPExtensions();
 
     /**
      * Sets the direction in which media in this <tt>MediaStream</tt> is to be

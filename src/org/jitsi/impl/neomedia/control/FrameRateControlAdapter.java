@@ -8,7 +8,7 @@ package org.jitsi.impl.neomedia.control;
 
 import java.awt.*;
 
-import javax.media.*;
+import javax.media.Control;
 import javax.media.control.*;
 
 /**

@@ -32,12 +32,6 @@ public abstract class CallPeerSecurityStatusEvent
     public static final int VIDEO_SESSION = 2;
 
     /**
-     * Session type of the event {@link #AUDIO_SESSION} or
-     * {@link #VIDEO_SESSION}.
-     */
-    private final int sessionType;
-
-    /**
      * Constructor required by the EventObject.
      *
      * @param source the source object for this event.
@@ -49,16 +43,5 @@ public abstract class CallPeerSecurityStatusEvent
     {
         super(source);
 
-        this.sessionType = sessionType;
-    }
-
-    /**
-     * Returns the type of the session, either AUDIO_SESSION or VIDEO_SESSION.
-     *
-     * @return the type of the session, either AUDIO_SESSION or VIDEO_SESSION.
-     */
-    public int getSessionType()
-    {
-        return sessionType;
     }
 }

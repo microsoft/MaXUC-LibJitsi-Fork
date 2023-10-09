@@ -27,108 +27,11 @@ public class AudioLevelCalculator
     private static final double INC_LEVEL = 0.4;
 
     /**
-     * The maximum level we can get as a result after compute.
-     */
-    private static final int MAX_AUDIO_LEVEL = Short.MAX_VALUE;
-
-    /**
      * The maximum sound pressure level which matches the maximum of the sound
      * meter.
      */
     private static final double MAX_SOUND_PRESSURE_LEVEL
         = 127 /* HUMAN TINNITUS (RINGING IN THE EARS) BEGINS */;
-
-    /**
-     * The minimum level we can get as a result after compute.
-     */
-    private static final int MIN_AUDIO_LEVEL = Short.MIN_VALUE;
-
-    /**
-     * Modifies a specific <tt>level</tt> value so that its multiple uses for
-     * the purposes of a sound meter will result in a smoother, animation-like
-     * display of its changes.
-     *
-     * @param level the level to animate
-     * @param minLevel the minimum value of the range to which <tt>level</tt>
-     * belongs
-     * @param maxLevel the maximum value of the range to which <tt>level</tt>
-     * belongs
-     * @param lastLevel the last level which has been previously calculated
-     * @return the value which represents <tt>level</tt> with animation taken
-     * into account
-     */
-    private static int animateLevel(
-            int level,
-            int minLevel, int maxLevel, int lastLevel)
-    {
-        // we don't allow to quick level changes
-        // the speed ot fthe change is controlled by
-        int diff = lastLevel - level;
-
-        if(diff >= 0)
-        {
-            int maxDiff = (int)(maxLevel*DEC_LEVEL);
-
-            if(diff > maxDiff)
-                level = lastLevel - maxDiff;
-        }
-        else
-        {
-            int maxDiff = (int)(maxLevel*INC_LEVEL);
-
-            if(diff > maxDiff)
-                level = lastLevel + maxDiff;
-        }
-        return level;
-    }
-
-    /**
-     * Estimates the signal power and use the levelRatio to scale it to the
-     * needed levels.
-     *
-     * @param samples the samples of the signal to calculate the signal power
-     * level of
-     * @param offset the offset that data starts.
-     * @param length the length of the data
-     * @param minLevel the minimum value of the result
-     * @param maxLevel the maximum value of the result
-     * @param lastLevel the last level we calculated.
-     * @return the power of the signal in dB SWL.
-     */
-    public static int calculateSignalPowerLevel(
-        byte[] samples, int offset, int length,
-        int minLevel, int maxLevel, int lastLevel)
-    {
-        if(length == 0)
-            return 0;
-
-        int samplesNumber = length/2;
-        int absoluteMeanSoundLevel = 0;
-        // magic ratio which scales good visually our levels
-        double levelRatio = MAX_AUDIO_LEVEL/(maxLevel - minLevel)/16;
-
-        // Do the processing
-        for (int i = 0; i < samplesNumber; i++)
-        {
-            int tempL = samples[offset++];
-            int tempH = samples[offset++];
-            int soundLevel = tempH << 8 | (tempL & 255);
-
-            if (soundLevel > MAX_AUDIO_LEVEL)
-                soundLevel = MAX_AUDIO_LEVEL;
-            else if (soundLevel < MIN_AUDIO_LEVEL)
-                soundLevel = MIN_AUDIO_LEVEL;
-
-            absoluteMeanSoundLevel += Math.abs(soundLevel);
-        }
-
-        int result
-            = (int)(absoluteMeanSoundLevel/samplesNumber/levelRatio);
-
-        result = ensureLevelRange(result, minLevel, maxLevel);
-        result = animateLevel(result, minLevel, maxLevel, lastLevel);
-        return result;
-    }
 
     /**
      * Calculates the sound pressure level of a signal with specific

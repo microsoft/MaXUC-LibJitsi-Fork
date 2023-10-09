@@ -333,48 +333,9 @@ public class XMLUtils
      * Writes the specified document to the given file adding indentatation.
      * The default encoding is UTF-8.
      *
-     * @param out the output File
      * @param document the document to write
-     *
-     * @throws java.io.IOException in case a TransformerException is thrown by
-     * the underlying Transformer.
-     */
-    public static void writeXML(Document document, File out)
-        throws java.io.IOException
-    {
-//        indentedWriteXML(document, new FileOutputStream(out));
-        writeXML(document
-                 , new StreamResult(
-                        new OutputStreamWriter(
-                                new FileOutputStream(out), "UTF-8"))
-                 , null
-                 , null);
-    }
-
-    /**
-     * Writes the specified document to the given file adding indentatation.
-     * The default encoding is UTF-8.
-     *
-     * @param writer the writer to use when writing the File
-     * @param document the document to write
-     *
-     * @throws java.io.IOException in case a TransformerException is thrown by
-     * the underlying Transformer.
-     */
-    public static void writeXML(Document document,
-                                Writer   writer)
-        throws java.io.IOException
-    {
-        writeXML(document, new StreamResult(writer), null, null);
-    }
-
-    /**
-     * Writes the specified document to the given file adding indentatation.
-     * The default encoding is UTF-8.
-     *
      * @param streamResult the streamResult object where the document should be
      * written
-     * @param document the document to write
      * @param doctypeSystem the doctype system of the xml document that we should
      * record in the file or null if none is specified.
      * @param doctypePublic the public identifier to be used in the document
@@ -453,55 +414,6 @@ public class XMLUtils
                 throw new RuntimeException("Unable to write xml", exc);
             }
         }
-    }
-
-    /**
-     * Whenever you'd need to print a configuration node and/or its children.
-     *
-     * @param root the root node to print.
-     * @param out the print stream that should be used to outpu
-     * @param recurse boolean
-     * @param prefix String
-     */
-    public static void printChildElements(Element root,
-                                          PrintStream out,
-                                          boolean recurse,
-                                          String prefix)
-    {
-        out.print(prefix + "<" + root.getNodeName());
-        NamedNodeMap attrs = root.getAttributes();
-        Node node;
-        for(int i = 0; i < attrs.getLength(); i++)
-        {
-            node = attrs.item(i);
-            out.print(" " + node.getNodeName() + "=\""
-                      + node.getNodeValue() + "\"");
-        }
-        out.println(">");
-
-        String data = getText(root);
-        if(data != null && data.trim().length() > 0)
-            out.println(prefix + "\t" + data);
-
-        data = getCData(root);
-        if(data != null && data.trim().length() > 0)
-            out.println(prefix + "\t<![CDATA[" + data + "]]>");
-
-        NodeList nodes = root.getChildNodes();
-        for(int i = 0; i < nodes.getLength(); i++)
-        {
-            node = nodes.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE)
-            {
-                if(recurse)
-                    printChildElements((Element)node, out, recurse, prefix
-                                       + "\t");
-                else
-                    out.println(prefix + node.getNodeName());
-            }
-        }
-
-        out.println(prefix + "</" + root.getNodeName() + ">");
     }
 
     /**

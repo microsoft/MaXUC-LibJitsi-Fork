@@ -7,7 +7,6 @@
 // Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.jmfext.media.protocol.maccoreaudio;
 
-import java.io.*;
 import java.util.*;
 import java.util.concurrent.locks.*;
 

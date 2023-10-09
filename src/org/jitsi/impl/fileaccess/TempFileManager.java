@@ -171,7 +171,7 @@ public class TempFileManager {
                 Logger.getLogger("default").log(
                         Level.FINE,
                         "TempFileManager::deleting old temp directory "
-                                + tmpFile);
+                                + tmpFile.getName());
 
                 try {
                     recursiveDelete(tmpFile);
@@ -184,7 +184,7 @@ public class TempFileManager {
                     Logger.getLogger("default").log(
                             Level.INFO,
                             "TempFileManager::unable to delete "
-                                    + tmpFile.getAbsolutePath());
+                                    + tmpFile.getName());
 
                     // Print the exception.
                     ByteArrayOutputStream ostream = new ByteArrayOutputStream();

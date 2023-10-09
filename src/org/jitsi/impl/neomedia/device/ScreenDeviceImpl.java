@@ -121,17 +121,6 @@ public class ScreenDeviceImpl implements ScreenDevice
     }
 
     /**
-     * If the screen contains specified point.
-     *
-     * @param p point coordinate
-     * @return true if point belongs to screen, false otherwise
-     */
-    public boolean containsPoint(Point p)
-    {
-        return screen.getDefaultConfiguration().getBounds().contains(p);
-    }
-
-    /**
      * Get bounds of the screen.
      *
      * @return bounds of the screen

@@ -23,18 +23,6 @@ public class NSErrorException
 
     /**
      * Initializes a new <tt>NSErrorException</tt> instance which is to report a
-     * specific Objective-C <tt>NSError</tt>.
-     *
-     * @param errorPtr the pointer to the Objective-C <tt>NSError</tt> object to
-     * be reported by the new instance
-     */
-    public NSErrorException(long errorPtr)
-    {
-        this(new NSError(errorPtr));
-    }
-
-    /**
-     * Initializes a new <tt>NSErrorException</tt> instance which is to report a
      * specific <tt>NSError</tt>.
      *
      * @param error the <tt>NSError</tt> to be reported by the new instance

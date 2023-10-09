@@ -16,15 +16,6 @@ import java.awt.*;
 public interface ScreenDevice
 {
     /**
-     * Determines whether this screen contains a specified point.
-     *
-     * @param p point coordinate
-     * @return <tt>true</tt> if <tt>point</tt> belongs to this screen;
-     * <tt>false</tt>, otherwise
-     */
-    boolean containsPoint(Point p);
-
-    /**
      * Gets this screen's index.
      *
      * @return this screen's index

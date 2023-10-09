@@ -27,14 +27,6 @@ public interface Recorder
         = "net.java.sip.communicator.impl.neomedia.SAVED_CALLS_PATH";
 
     /**
-     * The name of the configuration property the value of which specifies the
-     * format in which media is to be recorded by <tt>Recorder</tt> (e.g. the
-     * media being sent and received in a <tt>Call</tt>).
-     */
-    String FORMAT
-        = "net.java.sip.communicator.impl.neomedia.Recorder.FORMAT";
-
-    /**
      * Adds a new <tt>Listener</tt> to the list of listeners interested in
      * notifications from this <tt>Recorder</tt>.
      *

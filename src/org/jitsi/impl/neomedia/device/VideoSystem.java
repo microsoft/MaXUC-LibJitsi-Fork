@@ -24,19 +24,6 @@ public abstract class VideoSystem
 
     public static final String LOCATOR_PROTOCOL_AVFOUNDATION = "avfoundation";
 
-    public static VideoSystem getVideoSystem(String locatorProtocol)
-    {
-        VideoSystem videoSystem = getVideoSystem();
-        VideoSystem videoSystemWithLocatorProtocol = null;
-
-        if ((videoSystem != null) &&
-            (videoSystem.getLocatorProtocol().equalsIgnoreCase(locatorProtocol)))
-        {
-            videoSystemWithLocatorProtocol = videoSystem;
-        }
-        return videoSystemWithLocatorProtocol;
-    }
-
     public static VideoSystem getVideoSystem()
     {
         VideoSystem videoSystem = null;
@@ -112,15 +99,6 @@ public abstract class VideoSystem
         return
             DeviceConfiguration.PROP_VIDEO_SYSTEM + "." + getLocatorProtocol()
                 + "." + basePropertyName;
-    }
-
-    /**
-     * Gets the selected video device.
-     * @return the selected device.
-     */
-    public Device getSelectedDevice()
-    {
-        return mDeviceListManager.getSelectedDevice();
     }
 
     /**

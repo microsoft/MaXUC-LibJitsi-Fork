@@ -9,9 +9,6 @@ package org.jitsi.impl.neomedia.format;
 
 import java.util.*;
 
-import javax.media.*;
-import javax.media.format.*;
-
 import org.jitsi.impl.neomedia.*;
 import org.jitsi.service.neomedia.*;
 import org.jitsi.service.neomedia.codec.*;

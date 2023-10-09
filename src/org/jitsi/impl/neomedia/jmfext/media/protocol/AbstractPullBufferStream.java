@@ -6,7 +6,6 @@
  */
 package org.jitsi.impl.neomedia.jmfext.media.protocol;
 
-import javax.media.*;
 import javax.media.control.*;
 import javax.media.protocol.*;
 

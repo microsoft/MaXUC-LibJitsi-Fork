@@ -14,7 +14,7 @@ import java.util.*;
 import javax.media.*;
 import javax.media.format.*;
 
-import net.sf.fmj.media.*;
+import net.sf.fmj.media.AbstractCodec;
 
 import org.jitsi.impl.neomedia.codec.*;
 import org.jitsi.service.neomedia.codec.*;

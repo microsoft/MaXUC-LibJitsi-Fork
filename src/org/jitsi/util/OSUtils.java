@@ -7,10 +7,6 @@
 // Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.util;
 
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Utility fields for OS detection.
  *
@@ -30,12 +26,6 @@ public class OSUtils
     /** <tt>true</tt> if OS is MacOSX. */
     public static final boolean IS_MAC;
 
-    /** <tt>true</tt> if OS is MacOSX 32-bit. */
-    public static final boolean IS_MAC32;
-
-    /** <tt>true</tt> if OS is MacOSX 64-bit. */
-    public static final boolean IS_MAC64;
-
     /** <tt>true</tt> if OS is Windows. */
     public static final boolean IS_WINDOWS;
 
@@ -50,12 +40,6 @@ public class OSUtils
 
     /** <tt>true</tt> if OS is Windows 7. */
     public static final boolean IS_WINDOWS_7;
-
-    /** <tt>true</tt> if OS is Windows 8. */
-    public static final boolean IS_WINDOWS_8;
-
-    /** <tt>true</tt> if OS is Windows 10. */
-    public static final boolean IS_WINDOWS_10;
 
     /**
      * @return true if OS is Windows
@@ -100,8 +84,6 @@ public class OSUtils
             IS_WINDOWS = false;
             IS_WINDOWS_VISTA = false;
             IS_WINDOWS_7 = false;
-            IS_WINDOWS_8 = false;
-            IS_WINDOWS_10 = false;
         }
         else if (osName.startsWith("Mac"))
         {
@@ -109,8 +91,6 @@ public class OSUtils
             IS_WINDOWS = false;
             IS_WINDOWS_VISTA = false;
             IS_WINDOWS_7 = false;
-            IS_WINDOWS_8 = false;
-            IS_WINDOWS_10 = false;
 
         }
         else if (osName.startsWith("Windows"))
@@ -119,8 +99,6 @@ public class OSUtils
             IS_WINDOWS = true;
             IS_WINDOWS_VISTA = (osName.contains("Vista"));
             IS_WINDOWS_7 = (osName.contains("7"));
-            IS_WINDOWS_8 = (osName.contains("8"));
-            IS_WINDOWS_10 = (osName.contains("10"));
         }
         else
         {
@@ -128,8 +106,6 @@ public class OSUtils
             IS_WINDOWS = false;
             IS_WINDOWS_VISTA = false;
             IS_WINDOWS_7 = false;
-            IS_WINDOWS_8 = false;
-            IS_WINDOWS_10 = false;
         }
 
         // arch i.e. x86, amd64
@@ -157,8 +133,6 @@ public class OSUtils
         }
 
         // OS && arch
-        IS_MAC32 = IS_MAC && IS_32_BIT;
-        IS_MAC64 = IS_MAC && IS_64_BIT;
         IS_WINDOWS32 = IS_WINDOWS && IS_32_BIT;
         IS_WINDOWS64 = IS_WINDOWS && IS_64_BIT;
     }
@@ -321,51 +295,15 @@ public class OSUtils
             return result;
         }
     }
-}
-
-class MacVersionInfo
-{
-    private String name;
-    private int majorVersion;
 
     /**
-     * Make a MacVersionInfo if we can parse the version string.
-     * <p>
-     * The format we parse is (e.g.) MacbookPro13,4 where:<p><ul>
-     * <li>name is MacbookPro
-     * <li>majorVersion is 13
-     * <li>minorVersion is 4 (currently unused)
-     * </ul>
-     *
-     * @param versionString
-     * @return
+     * Testing helper method to guard code which should not be executed in UT.
+     * In UT this method can be mocked to return true.
+     * @return always false for non-UT code
      */
-    static Optional<MacVersionInfo> makeVersionInfo(String versionString)
+    public static boolean isUT()
     {
-        Pattern macModelPattern = Pattern.compile("(?<name>\\D+)(?<majorVersion>\\d+),(?<minorVersion>\\d+)");
-        Matcher m = macModelPattern.matcher(versionString);
-
-        return (m.matches() ? Optional.of(new MacVersionInfo(m.group("name"), Integer.parseInt(m.group("majorVersion")))) : Optional.empty());
-    }
-
-    /**
-     * Constructor is private - create the MacVersionInfo through makeVersionInfo.
-     *
-     * @param name
-     * @param majorVersion
-     */
-    private MacVersionInfo(String name, int majorVersion)
-    {
-        this.name = name;
-        this.majorVersion = majorVersion;
-    }
-
-    /**
-     * @return Whether this version is blocklisted.
-     */
-    public boolean versionIsBlocklisted()
-    {
-        return ("MacBookPro".equals(name) && majorVersion >= 13);
+        return false;
     }
 }
 

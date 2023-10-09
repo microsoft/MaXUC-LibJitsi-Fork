@@ -90,17 +90,6 @@ public interface ResourceManagementService
     InputStream getImageInputStreamForPath(String path);
 
     /**
-     * Returns the <tt>InputStream</tt> of the image corresponding to the given
-     * key.
-     *
-     * @param streamKey The identifier of the image in the resource properties
-     * file.
-     * @return the <tt>InputStream</tt> of the image corresponding to the given
-     * key.
-     */
-    InputStream getImageInputStream(String streamKey);
-
-    /**
      * Returns the <tt>URL</tt> of the image corresponding to the given key.
      *
      * @param urlKey The identifier of the image in the resource properties file.
@@ -208,14 +197,6 @@ public interface ResourceManagementService
     char getI18nMnemonic(String key, Locale l);
 
     // Settings pack methods
-    /**
-     * Returns an url for the setting corresponding to the given key.
-     * Used when the setting is an actual file.
-     *
-     * @param urlKey The key of the setting.
-     * @return Url to the corresponding resource.
-     */
-    URL getSettingsURL(String urlKey);
 
     /**
      * Returns an InputStream for the setting corresponding to the given key.
@@ -266,13 +247,6 @@ public interface ResourceManagementService
     int getScaledSize(String key);
 
     // Sound pack methods
-    /**
-     * Returns an url for the sound resource corresponding to the given key.
-     *
-     * @param urlKey The key of the setting.
-     * @return Url to the corresponding resource.
-     */
-    URL getSoundURL(String urlKey);
 
     /**
      * Returns an url for the sound resource corresponding to the given path.
@@ -319,14 +293,6 @@ public interface ResourceManagementService
      * @return The image for the given identifier.
      */
     BufferedImageFuture getBufferedImageFromPath(String imagePath);
-
-    /**
-     * Returns the URL of the resource defined by the given key.
-     *
-     * @param resourceKey The key of the resource in the default properties file.
-     * @return the URL of the resource defined by the resource key
-     */
-    URL getResourceURLFromResourceKey(String resourceKey);
 
     /**
      * Constructs an <tt>ImageIcon</tt> from the specified image path

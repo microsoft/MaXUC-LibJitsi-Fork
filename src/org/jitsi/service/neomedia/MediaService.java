@@ -183,13 +183,6 @@ public interface MediaService
     SDesControl createSDesControl();
 
     /**
-     * Get available <tt>ScreenDevice</tt>s.
-     *
-     * @return screens
-     */
-    List<ScreenDevice> getAvailableScreenDevices();
-
-    /**
      * Returns the current <tt>EncodingConfiguration</tt> instance.
      *
      * @return the current <tt>EncodingConfiguration</tt> instance.
@@ -211,13 +204,6 @@ public interface MediaService
     MediaDevice getDefaultDevice(
             MediaType mediaType,
             MediaUseCase useCase);
-
-    /**
-     * Get default <tt>ScreenDevice</tt> device.
-     *
-     * @return default screen device
-     */
-    ScreenDevice getDefaultScreenDevice();
 
     /**
      * Gets the <tt>CaptureDevice</tt> user choices such as the default audio

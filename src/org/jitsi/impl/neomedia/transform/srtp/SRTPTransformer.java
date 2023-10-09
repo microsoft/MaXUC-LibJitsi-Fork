@@ -54,17 +54,6 @@ public class SRTPTransformer
     private final Hashtable<Long, SRTPCryptoContext> contexts;
 
     /**
-     * Initializes a new <tt>SRTPTransformer</tt> instance.
-     *
-     * @param factory the context factory to be used by the new
-     * instance for both directions.
-     */
-    public SRTPTransformer(SRTPContextFactory factory)
-    {
-        this(factory, factory);
-    }
-
-    /**
      * Constructs a SRTPTransformer object.
      *
      * @param forwardFactory The associated context factory for forward

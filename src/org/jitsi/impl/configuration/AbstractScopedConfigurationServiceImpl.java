@@ -108,6 +108,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
         @Override
         public void run()
         {
+            logger.info("Run Config service shutdown hook");
             storePendingConfigurationNow(false);
         }
     };
@@ -927,33 +928,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
     }
 
     /**
-     * Use with caution! Returns the name of the configuration file currently
-     * used. Placed in HomeDirLocation/HomeDirName
-     * {@link #getScHomeDirLocation()}
-     * {@link #getScHomeDirName()}
-     * @return  the name of the configuration file currently used.
-     */
-    @Override
-    public String getConfigurationFilename()
-    {
-        try
-        {
-            File file =  getConfigurationFile();
-            if (file != null)
-            {
-                return file.getName();
-            }
-
-        }
-        catch(IOException ex)
-        {
-            logger.error("Error loading configuration file", ex);
-        }
-
-        return null;
-    }
-
-    /**
      * Returns the configuration file currently used by the implementation.
      * If there is no such file or this is the first time we reference it
      * a new one is created.
@@ -1627,28 +1601,6 @@ public abstract class AbstractScopedConfigurationServiceImpl
     private boolean isSystemProperty(String propertyName)
     {
         return store.isSystemProperty(propertyName);
-    }
-
-    /**
-     * Deletes the configuration file currently used by this implementation.
-     */
-    @Override
-    public void purgeStoredConfiguration()
-    {
-        logger.warn("Purging stored configuration! Stack: ", new Throwable("Call stack:"));
-        if (configurationFile != null)
-        {
-            configurationFile.delete();
-            configurationFile = null;
-            transactionBasedFile = null;
-        }
-        if (store != null)
-        {
-            for (String name : store.getPropertyNames())
-            {
-                store.removeProperty(name);
-            }
-        }
     }
 
     /**

@@ -61,19 +61,6 @@ public class VideoNotifierSupport
      *
      * @param source the <tt>Object</tt> which is to be reported as the source
      * of the <tt>VideoEvent</tt>s fired by the new instance
-     */
-    public VideoNotifierSupport(Object source)
-    {
-        this(source, true);
-    }
-
-    /**
-     * Initializes a new <tt>VideoNotifierSupport</tt> instance which is to
-     * facilitate the management of <tt>VideoListener</tt>s and firing
-     * <tt>VideoEvent</tt>s to them for a specific <tt>Object</tt>.
-     *
-     * @param source the <tt>Object</tt> which is to be reported as the source
-     * of the <tt>VideoEvent</tt>s fired by the new instance
      * @param synchronous <tt>true</tt> if the new instance is to deliver the
      * <tt>VideoEvent</tt>s synchronously; otherwise, <tt>false</tt>
      */

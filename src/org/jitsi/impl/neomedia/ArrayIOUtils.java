@@ -106,20 +106,4 @@ public class ArrayIOUtils
         out[outOffset + 1] = (byte) (in >> 8);
     }
 
-    /**
-     * Converts a short integer to a series of bytes and writes the result into
-     * a specific output array of bytes starting the writing at a specific
-     * offset in it.
-     *
-     * @param in the short integer to be written out as a series of bytes
-     * specified as <tt>short</tt>
-     * @param out the output to receive the conversion of the specified short
-     * integer to a series of bytes
-     * @param outOffset the offset in <tt>out</tt> at which the writing of
-     * the result of the conversion is to be started
-     */
-    public static void writeShort(short in, byte[] out, int outOffset)
-    {
-        writeInt16(in, out, outOffset);
-    }
 }

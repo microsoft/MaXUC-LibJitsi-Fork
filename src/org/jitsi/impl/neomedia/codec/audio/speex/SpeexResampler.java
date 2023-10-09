@@ -16,7 +16,6 @@ import org.jitsi.impl.neomedia.codec.*;
 import org.jitsi.util.*;
 
 import net.java.sip.communicator.impl.neomedia.codec.audio.speex.*;
-import net.sf.fmj.media.*;
 
 /**
  * Implements an audio resampler using Speex.
@@ -147,7 +146,7 @@ public class SpeexResampler
     }
 
     /**
-     * @see AbstractCodecExt#doClose()
+     * @see AbstractCodec2#doClose()
      */
     @Override
     protected void doClose()

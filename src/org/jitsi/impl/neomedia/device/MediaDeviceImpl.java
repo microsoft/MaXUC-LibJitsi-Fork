@@ -20,7 +20,7 @@ import org.jitsi.impl.neomedia.jmfext.media.protocol.*;
 import org.jitsi.impl.neomedia.protocol.*;
 import org.jitsi.service.neomedia.*;
 import org.jitsi.service.neomedia.codec.*;
-import org.jitsi.service.neomedia.device.*;
+import org.jitsi.service.neomedia.device.MediaDevice;
 import org.jitsi.service.neomedia.format.*;
 import org.jitsi.util.*;
 

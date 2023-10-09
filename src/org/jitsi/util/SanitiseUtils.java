@@ -72,11 +72,12 @@ public final class SanitiseUtils
     public static String sanitise(final String original, final Pattern pattern,
                                   final Function<String, String> sanitiser)
     {
-        return sanitise(original, List.of(pattern), sanitiser);
+        return sanitiseFirstPatternMatch(original, List.of(pattern), sanitiser);
     }
 
     /**
-     * Returns a string with sanitised value if it matches the provided collection of patterns.
+     * Returns a string with sanitised value if it matches one of the patterns provided in the collection.
+     * Please use sanitiseAllMatchedPatterns method if all the matches should be sanitised.
      * Input string will be sanitised for the first matched pattern only.
      * All matches will be sanitised using the provided function.
      *
@@ -85,14 +86,15 @@ public final class SanitiseUtils
      * @param sanitiser function to sanitise found string
      * @return sanitised string
      */
-    public static String sanitise(final String original, final Collection<Pattern> patterns,
-                                  final Function<String, String> sanitiser)
+    public static String sanitiseFirstPatternMatch(final String original, final Collection<Pattern> patterns,
+                                                   final Function<String, String> sanitiser)
     {
-        return sanitise(original, patterns, sanitiser, () -> original);
+        return sanitiseFirstPatternMatch(original, patterns, sanitiser, () -> original);
     }
 
     /**
-     * Returns a string with sanitised value if it matches the provided collection of patterns.
+     * Returns a string with sanitised value if it matches one of the patterns provided in the collection.
+     * Please use sanitiseAllMatchedPatterns method if all the matches should be sanitised.
      * Input string will be sanitised for the first matched pattern only.
      * All matches will be sanitised using the provided function.
      *
@@ -102,9 +104,9 @@ public final class SanitiseUtils
      * @param noMatchSanitiser function to sanitise if no match found
      * @return sanitised string
      */
-    public static String sanitise(final String original, final Collection<Pattern> patterns,
-                                  final Function<String, String> sanitiser,
-                                  final Supplier<String> noMatchSanitiser)
+    public static String sanitiseFirstPatternMatch(final String original, final Collection<Pattern> patterns,
+                                                   final Function<String, String> sanitiser,
+                                                   final Supplier<String> noMatchSanitiser)
     {
         if (StringUtils.isNullOrEmpty(original))
         {
@@ -117,6 +119,27 @@ public final class SanitiseUtils
                 .map(matcher -> sanitiseAllMatches(matcher, sanitiser))
                 .findFirst()
                 .orElseGet(noMatchSanitiser);
+    }
+
+    /**
+     * Returns a string with sanitised value if it matches the provided collection of patterns.
+     * Input string will be sanitised for all the matched patterns.
+     * All matches will be sanitised using the provided function.
+     *
+     * @param original original string
+     * @param patterns collection of patterns to match
+     * @param sanitiser function to sanitise found string
+     * @return sanitised string
+     */
+    public static String sanitiseAllMatchedPatterns(final String original, final Collection<Pattern> patterns,
+                                                  final Function<String, String> sanitiser)
+    {
+        String hashedString = original;
+        for (Pattern pattern: patterns)
+        {
+            hashedString = sanitise(hashedString, pattern, sanitiser);
+        }
+        return hashedString;
     }
 
     /**

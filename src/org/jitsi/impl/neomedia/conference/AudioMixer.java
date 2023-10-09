@@ -218,20 +218,6 @@ public class AudioMixer
      * Adds a new input <tt>DataSource</tt> to the collection of input
      * <tt>DataSource</tt>s from which this instance reads audio. If the
      * specified <tt>DataSource</tt> indeed provides audio, the respective
-     * contributions to the mix are always included.
-     *
-     * @param inDataSource a new <tt>DataSource</tt> to input audio to this
-     * instance
-     */
-    public void addInDataSource(DataSource inDataSource)
-    {
-        addInDataSource(inDataSource, null);
-    }
-
-    /**
-     * Adds a new input <tt>DataSource</tt> to the collection of input
-     * <tt>DataSource</tt>s from which this instance reads audio. If the
-     * specified <tt>DataSource</tt> indeed provides audio, the respective
      * contributions to the mix will be excluded from the mix output provided
      * through a specific <tt>AudioMixingPushBufferDataSource</tt>.
      *

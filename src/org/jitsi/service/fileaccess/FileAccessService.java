@@ -21,13 +21,6 @@ import java.io.*;
 public interface FileAccessService {
 
     /**
-     * The key of the configuration property containing the user home dir - if
-     * it is not defined the system property is used
-     */
-    String CONFPROPERTYKEY_USER_HOME
-        = "net.java.sip.communicator.fileaccess.USER_HOME";
-
-    /**
      * This method returns a created temporary file. After you close this file
      * it is not guaranteed that you will be able to open it again nor that it
      * will contain any information.
@@ -40,20 +33,6 @@ public interface FileAccessService {
      * permissions issues.
      */
     File getTemporaryFile() throws IOException, SecurityException;
-
-    /**
-     * This method returns a created temporary directory. Any file you create in
-     * it will be a temporary file.
-     *
-     * Note: If there is no opened file in this directory it may be deleted at
-     * any time. Note: DO NOT store unencrypted sensitive information in this
-     * directory
-     *
-     * @return The created directory
-     * @throws IOException
-     *             If the directory cannot be created
-     */
-    File getTemporaryDirectory() throws IOException, SecurityException;
 
     /**
      * This method returns a file specific to the current Computer user. It may not
@@ -145,36 +124,10 @@ public interface FileAccessService {
             throws IOException, SecurityException;
 
     /**
-     * This method creates a directory specific to the current Computer user.
-     *
-     * {@link #getPrivatePersistentDirectory(String)}
-     *
-     * @param dirNames
-     *            The name of the private directory you wish to access.
-     * @return The created directory.
-     * @throws SecurityException Thrown if we fail to access or create the
-     * directory due to permissions issues.
-     * @throws IOException
-     *             Thrown if there is no suitable location for the persistent
-     *             directory, or creation of directory failed.
-     */
-    File getPrivatePersistentDirectory(String[] dirNames)
-            throws IOException, SecurityException;
-
-    /**
      * Returns the default download directory depending on the operating system.
      *
      * @return the default download directory depending on the operating system
      */
     File getDefaultDownloadDirectory();
 
-    /**
-     * Creates a failsafe transaction which can be used to safely store
-     * informations into a file.
-     *
-     * @param file The file concerned by the transaction, null if file is null.
-     *
-     * @return A new failsafe transaction related to the given file.
-     */
-    FailSafeTransaction createFailSafeTransaction(File file);
 }

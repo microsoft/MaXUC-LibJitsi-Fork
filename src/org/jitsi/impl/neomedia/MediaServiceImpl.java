@@ -842,34 +842,6 @@ public class MediaServiceImpl
         }
         return notifyVolumeControl;
     }
-    /**
-     * Get available screens.
-     *
-     * @return screens
-     */
-    @Override
-    public List<ScreenDevice> getAvailableScreenDevices()
-    {
-        ScreenDevice[] screens = ScreenDeviceImpl.getAvailableScreenDevices();
-        List<ScreenDevice> screenList;
-
-        if ((screens != null) && (screens.length != 0))
-            screenList = new ArrayList<>(Arrays.asList(screens));
-        else
-            screenList = Collections.emptyList();
-        return screenList;
-    }
-
-    /**
-     * Get default screen device.
-     *
-     * @return default screen device
-     */
-    @Override
-    public ScreenDevice getDefaultScreenDevice()
-    {
-        return ScreenDeviceImpl.getDefaultScreenDevice();
-    }
 
     /**
      * Creates a new <tt>Recorder</tt> instance that can be used to record a

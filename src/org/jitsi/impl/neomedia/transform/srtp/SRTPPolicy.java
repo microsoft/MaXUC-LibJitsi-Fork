@@ -122,16 +122,6 @@ public class SRTPPolicy
     }
 
     /**
-     * Set the authentication key length
-     *
-     * @param authKeyLength the authentication key length
-     */
-    public void setAuthKeyLength(int authKeyLength)
-    {
-        this.authKeyLength = authKeyLength;
-    }
-
-    /**
      * Get the authentication tag length
      *
      * @return the authentication tag length
@@ -139,16 +129,6 @@ public class SRTPPolicy
     public int getAuthTagLength()
     {
         return this.authTagLength;
-    }
-
-    /**
-     * Set the authentication tag length
-     *
-     * @param authTagLength the authentication tag length
-     */
-    public void setAuthTagLength(int authTagLength)
-    {
-        this.authTagLength = authTagLength;
     }
 
     /**
@@ -162,16 +142,6 @@ public class SRTPPolicy
     }
 
     /**
-     * Set the authentication type
-     *
-     * @param authType the authentication type
-     */
-    public void setAuthType(int authType)
-    {
-        this.authType = authType;
-    }
-
-    /**
      * Get the encryption key length
      *
      * @return the encryption key length
@@ -179,16 +149,6 @@ public class SRTPPolicy
     public int getEncKeyLength()
     {
         return this.encKeyLength;
-    }
-
-    /**
-     * Set the encryption key length
-     *
-     * @param encKeyLength the encryption key length
-     */
-    public void setEncKeyLength(int encKeyLength)
-    {
-        this.encKeyLength = encKeyLength;
     }
 
     /**
@@ -202,16 +162,6 @@ public class SRTPPolicy
     }
 
     /**
-     * Set the encryption type
-     *
-     * @param encType encryption type
-     */
-    public void setEncType(int encType)
-    {
-        this.encType = encType;
-    }
-
-    /**
      * Get the salt key length
      *
      * @return the salt key length
@@ -221,13 +171,4 @@ public class SRTPPolicy
         return this.saltKeyLength;
     }
 
-    /**
-     * Set the salt key length
-     *
-     * @param keyLength the salt key length
-     */
-    public void setSaltKeyLength(int keyLength)
-    {
-        this.saltKeyLength = keyLength;
-    }
 }

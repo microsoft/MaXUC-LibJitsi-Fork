@@ -51,8 +51,8 @@
             <artifact name="jain-sip-ri" type="jar" ext="jar"/>
         </dependency>
 
-        <dependency org="org.bouncycastle" name="bcpkix-jdk15on" rev="1.70" conf="runtime,lib->default" >
-            <!-- Provides bcpkix-jdk15on.jar and transitive dependency bcprov-jdk15on.jar in libjitsi/lib -->
+        <dependency org="org.bouncycastle" name="bcpkix-jdk18on" rev="1.75" conf="runtime,lib->default" >
+            <!-- Provides bcpkix-jdk18on.jar and transitive dependency bcprov-jdk18on.jar in libjitsi/lib -->
         </dependency>
 
         <dependency org="ch.imvs" name="sdes4j" rev="1.1.5" conf="runtime,lib->default" >
@@ -76,7 +76,7 @@
             transitive="false" to exclude junit, which json-simple's POM file erroneously declares as a compile dependency. -->
         </dependency>
 
-        <dependency org="com.google.guava" name="guava" rev="31.1-jre" conf="runtime,lib->default" transitive="false" >
+        <dependency org="com.google.guava" name="guava" rev="32.0.1-jre" conf="runtime,lib->default" transitive="false" >
              <!-- Provides guava.jar in libjitsi/lib. -->
         </dependency>
 

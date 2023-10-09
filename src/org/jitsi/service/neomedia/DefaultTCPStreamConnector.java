@@ -42,37 +42,6 @@ public class DefaultTCPStreamConnector
     protected Socket dataSocket;
 
     /**
-     * Initializes a new <tt>DefaultTCPStreamConnector</tt> instance with no
-     * control and data <tt>Socket</tt>s.
-     * <p>
-     * Suitable for extenders willing to delay the creation of the control and
-     * data sockets. For example, they could override
-     * {@link #getControlSocket()} and/or {@link #getDataSocket()} and create
-     * them on demand.
-     */
-    public DefaultTCPStreamConnector()
-    {
-        this(null, null);
-    }
-
-    /**
-     * Initializes a new <tt>DefaultTCPStreamConnector</tt> instance which is to
-     * represent a specific pair of control and data <tt>Socket</tt>s.
-     *
-     * @param dataSocket the <tt>Socket</tt> to be used for data (e.g.
-     * RTP) traffic
-     * @param controlSocket the <tt>Socket</tt> to be used for control
-     * data (e.g. RTCP) traffic
-     */
-    public DefaultTCPStreamConnector(
-            Socket dataSocket,
-            Socket controlSocket)
-    {
-        this.controlSocket = controlSocket;
-        this.dataSocket = dataSocket;
-    }
-
-    /**
      * Releases the resources allocated by this instance in the course of its
      * execution and prepares it to be garbage collected.
      *

@@ -142,16 +142,6 @@ public class Device
     }
 
     /**
-     * Returns the device transport type of this instance.
-     *
-     * @return the device transport type of this instance
-     */
-    public String getTransportType()
-    {
-        return transportType;
-    }
-
-    /**
      * Returns the device UID (unique identifier) of this instance.
      *
      * @return the device UID (unique identifier) of this instance

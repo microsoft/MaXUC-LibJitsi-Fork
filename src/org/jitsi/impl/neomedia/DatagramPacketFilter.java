@@ -33,5 +33,5 @@ public interface DatagramPacketFilter
      *         specified <tt>DatagramPacket</tt> in a selection based on this
      *         filter; otherwise, <tt>false</tt>
      */
-    public boolean accept(DatagramPacket p);
+    boolean accept(DatagramPacket p);
 }

@@ -492,22 +492,6 @@ public class MediaStreamImpl
     }
 
     /**
-     * Returns a map containing all currently active <tt>RTPExtension</tt>s in
-     * use by this stream.
-     *
-     * @return a map containing all currently active <tt>RTPExtension</tt>s in
-     * use by this stream.
-     */
-    @Override
-    public Map<Byte, RTPExtension> getActiveRTPExtensions()
-    {
-        synchronized (activeRTPExtensions)
-        {
-            return new HashMap<>(activeRTPExtensions);
-        }
-    }
-
-    /**
      * Releases the resources allocated by this instance in the course of its
      * execution and prepares it to be garbage collected.
      *
@@ -1175,26 +1159,6 @@ public class MediaStreamImpl
         }
 
         return null;
-    }
-
-    /**
-     * Returns the transport protocol used by the streams.
-     *
-     * @return the transport protocol (UDP or TCP) used by the streams. null if
-     * the stream connector is not instanciated.
-     */
-    @Override
-    public StreamConnector.Protocol getTransportProtocol()
-    {
-        StreamConnector connector =
-            (rtpConnector != null) ? rtpConnector.getConnector() : null;
-
-        if(connector == null)
-        {
-            return null;
-        }
-
-        return connector.getProtocol();
     }
 
     /**
@@ -2700,42 +2664,6 @@ public class MediaStreamImpl
             remoteSourceIDs.add(remoteSourceID);
 
         firePropertyChange(PNAME_REMOTE_SSRC, oldValue, remoteSourceID);
-    }
-
-    /**
-     * Returns the list of CSRC identifiers for all parties currently known
-     * to contribute to the media that this stream is sending toward its remote
-     * counter part. In other words, the method returns the list of CSRC IDs
-     * that this stream will include in outgoing RTP packets. This method will
-     * return an <tt>null</tt> in case this stream is not part of a mixed
-     * conference call.
-     *
-     * @return a <tt>long[]</tt> array of CSRC IDs representing parties that are
-     * currently known to contribute to the media that this stream is sending
-     * or an <tt>null</tt> in case this <tt>MediaStream</tt> is not part of a
-     * conference call.
-     */
-    public long[] getLocalContributingSourceIDs()
-    {
-        return localContributingSourceIDList;
-    }
-
-    /**
-     * Returns the <tt>List</tt> of CSRC identifiers representing the parties
-     * contributing to the stream that we are receiving from this
-     * <tt>MediaStream</tt>'s remote party.
-     *
-     * @return a <tt>List</tt> of CSRC identifiers representing the parties
-     * contributing to the stream that we are receiving from this
-     * <tt>MediaStream</tt>'s remote party.
-     */
-    public long[] getRemoteContributingSourceIDs()
-    {
-        long[] remoteSsrcList = getDeviceSession().getRemoteSSRCList();
-
-        // TODO implement
-
-        return remoteSsrcList;
     }
 
     /**

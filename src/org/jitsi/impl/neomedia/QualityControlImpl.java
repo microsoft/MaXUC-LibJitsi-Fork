@@ -11,7 +11,6 @@ import java.awt.*;
 
 import org.jitsi.impl.neomedia.device.*;
 import org.jitsi.service.neomedia.*;
-import org.jitsi.service.protocol.*;
 import org.jitsi.util.*;
 
 /**

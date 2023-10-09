@@ -47,21 +47,6 @@ public class ConfigurationServiceImpl implements ConfigurationService
         {
             createUser(activeUser);
         }
-
-        //  We disable the Java client's Mac dock icon and menu bar by default.
-        //  For dev/testing purposes we can set a config flag to re-enable the Java UI.
-        //  If that has been set, we re-enable the Mac dock icon and menu bar here.
-        if (OSUtils.isMac())
-        {
-            boolean showMainFrame = globalConfig.getBoolean(
-                    "plugin.wispa.SHOW_MAIN_UI", false);
-
-            sLog.info("Configured to show main UI? " + showMainFrame);
-            if (showMainFrame)
-            {
-                OSUtils.showMacDockAndMenu();
-            }
-        }
     }
 
     /**

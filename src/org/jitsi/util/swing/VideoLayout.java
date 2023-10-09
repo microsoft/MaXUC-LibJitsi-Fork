@@ -153,8 +153,6 @@ public class VideoLayout
         remotes = visibleRemotes;
 
         int remoteCount = remotes.size();
-        Dimension parentSize = parent.getSize();
-
         if (remoteCount == 1)
         {
             super.layoutContainer(parent, Component.CENTER_ALIGNMENT);
