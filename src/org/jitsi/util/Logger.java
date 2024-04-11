@@ -491,7 +491,6 @@ public class Logger
     {
         try
         {
-            FileHandler.pattern = null;
             LogManager.getLogManager().reset();
             LogManager.getLogManager().readConfiguration();
         }

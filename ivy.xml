@@ -38,7 +38,7 @@
             <!-- Provides osgi.core.jar in libjitsi/lib -->
         </dependency>
 
-        <dependency name="fmj" rev="1.0.4" conf="runtime,lib->default" >
+        <dependency name="fmj" rev="1.0.6" conf="runtime,lib->default" >
             <!-- Provides fmj.jar in libjitsi/lib -->
         </dependency>
 
@@ -51,7 +51,7 @@
             <artifact name="jain-sip-ri" type="jar" ext="jar"/>
         </dependency>
 
-        <dependency org="org.bouncycastle" name="bcpkix-jdk18on" rev="1.75" conf="runtime,lib->default" >
+        <dependency org="org.bouncycastle" name="bcpkix-jdk18on" rev="1.77" conf="runtime,lib->default" >
             <!-- Provides bcpkix-jdk18on.jar and transitive dependency bcprov-jdk18on.jar in libjitsi/lib -->
         </dependency>
 
@@ -63,11 +63,11 @@
             <!-- Provides commons-math3.jar in libjitsi/lib -->
         </dependency>
 
-        <dependency org="org.apache.commons" name="commons-lang3" rev="3.12.0" conf="runtime,lib->default" >
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.14.0" conf="runtime,lib->default" >
             <!-- Provides commons-lang3.jar in libjitsi/lib -->
         </dependency>
 
-        <dependency org="org.apache.commons" name="commons-text" rev="1.10.0" conf="runtime,lib->default" >
+        <dependency org="org.apache.commons" name="commons-text" rev="1.11.0" conf="runtime,lib->default" >
             <!-- Provides commons-text.jar in libjitsi/lib -->
         </dependency>
 
@@ -76,7 +76,7 @@
             transitive="false" to exclude junit, which json-simple's POM file erroneously declares as a compile dependency. -->
         </dependency>
 
-        <dependency org="com.google.guava" name="guava" rev="32.0.1-jre" conf="runtime,lib->default" transitive="false" >
+        <dependency org="com.google.guava" name="guava" rev="33.0.0-jre" conf="runtime,lib->default" transitive="false" >
              <!-- Provides guava.jar in libjitsi/lib. -->
         </dependency>
 
@@ -89,17 +89,17 @@
         <!-- These are custom-built or non-Maven dependencies -->
 
         <!-- Built externally from sources https://github.com/xiph/speex/releases -->
-        <dependency name="libspeex" rev="1.2.1" conf="nativewindows->default">
+        <dependency name="libspeex-x86_64" rev="1.2.1" conf="nativewindows->default">
             <artifact name="libspeex" type="native" ext="a" />
         </dependency>
 
         <!-- Built externally from sources https://github.com/xiph/speexdsp/releases -->
-        <dependency name="libspeexdsp" rev="1.2.1" conf="nativewindows->default">
+        <dependency name="libspeexdsp-x86_64" rev="1.2.1" conf="nativewindows->default">
             <artifact name="libspeexdsp" type="native" ext="a" />
         </dependency>
 
         <!-- Built externally from sources https://opus-codec.org/downloads/ -->
-        <dependency name="libopus" rev="1.3.1" conf="nativewindows->default">
+        <dependency name="libopus-x86_64" rev="1.3.1" conf="nativewindows->default">
             <artifact name="libopus" type="native" ext="a" />
         </dependency>
 

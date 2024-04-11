@@ -12,6 +12,8 @@ import java.beans.*;
 
 import javax.swing.*;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.jitsi.util.CustomAnnotations.*;
 import org.jitsi.util.OSUtils;
 
@@ -75,7 +77,8 @@ public class VideoContainer
      * be invoked (as soon as {@link #inAddOrRemove} decreases from a positive
      * number to zero).
      */
-    private boolean validateAndRepaint;
+    @VisibleForTesting
+    public boolean validateAndRepaint;
 
     /**
      * Initializes a new <tt>VideoContainer</tt> with a specific

@@ -371,7 +371,7 @@ public class MacCoreaudioStream
                 boolean isEchoCancelActivated = MacCoreaudioSystem.isEchoCancelActivated();
                 logger.debug("Call on MacCoreAudioDevice: startStream(" +
                         "..., isEchoCancelActivated=" + isEchoCancelActivated +")");
-                stream = MacCoreAudioDevice.startStream(
+                stream = MacCoreAudioDevice.startStreamJava(
                         deviceUID,
                         this,
                         (float) format.getSampleRate(),

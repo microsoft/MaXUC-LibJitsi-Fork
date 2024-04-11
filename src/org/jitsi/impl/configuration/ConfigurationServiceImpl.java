@@ -33,6 +33,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
     public static final String PROPERTY_ACTIVE_USER
         = "net.java.sip.communicator.plugin.provisioning.auth.ACTIVE_USER";
 
+    /** Name of the app start timestamp property. */
+    private static final String PROPERTY_APP_START =
+            "net.java.sip.communicator.plugin.provisioning.APP_START";
+
     private static ScopedConfigurationService globalConfig = null;
     private static UserConfigurationServiceImpl userConfig = null;
 
@@ -41,6 +45,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
         String activeUser;
 
         globalConfig = new GlobalConfigurationServiceImpl();
+
+        // We need to save the start of the app time in order to log it in an
+        // analytic event when the app terminates.
+        globalConfig.setProperty(PROPERTY_APP_START, System.currentTimeMillis());
 
         activeUser = globalConfig.getString(PROPERTY_ACTIVE_USER);
         if (activeUser != null)

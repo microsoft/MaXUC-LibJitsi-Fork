@@ -253,9 +253,10 @@ public class MediaUtils
             Map<String, String> h264FormatParams = new HashMap<>();
 
             if (cfg == null ||
-                cfg.global().getString("net.java.sip.communicator.impl.neomedia" +
-                       ".codec.video.h264.defaultProfile",
-                       JNIEncoder.MAIN_PROFILE).equals(JNIEncoder.MAIN_PROFILE))
+                JNIEncoder.MAIN_PROFILE.equals(
+                        cfg.global().getString("net.java.sip.communicator.impl.neomedia" +
+                                               ".codec.video.h264.defaultProfile",
+                                               JNIEncoder.MAIN_PROFILE)))
             {
                 // main profile, common features, HD capable level 3.1
                 h264FormatParams.put(H264_FMT_PROFILE_LEVEL_ID, format("4DE0%02X", idc));

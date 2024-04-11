@@ -2,8 +2,8 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
 <project name="libjitsi" xmlns:jacoco="antlib:org.jacoco.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
     <!-- Java version to use.  We use the same version for everything. -->
-    <property name="javac.source" value="11"/>
-    <property name="javac.target" value="11"/>
+    <property name="javac.source" value="17"/>
+    <property name="javac.target" value="17"/>
 
     <dirname property="lj.basedir" file="${ant.file.libjitsi}"/>
     <property name="project.basedir" value="${lj.basedir}/"/> <!-- When invoked from jitsi/build.xml, this property is already set. -->
@@ -30,8 +30,10 @@
         </path>
 
         <path id="libjitsi.test.class.path">
-            <!-- jmockit.jar first: https://github.com/jmockit/jmockit1/issues/125#issuecomment-70128894 -->
-            <pathelement location="${project.basedir}/buildtools/jmockit.jar" />
+            <pathelement location="${project.basedir}/buildtools/mockito-core.jar" />
+            <pathelement location="${project.basedir}/buildtools/byte-buddy.jar" />
+            <pathelement location="${project.basedir}/buildtools/byte-buddy-agent.jar" />
+            <pathelement location="${project.basedir}/buildtools/objenesis.jar" />
             <pathelement location="${project.basedir}/buildtools/junit.jar" />
             <pathelement location="${project.basedir}/buildtools/hamcrest-all.jar" />
             <path refid="libjitsi.compile.class.path" />

@@ -6,12 +6,14 @@
  */
 package org.jitsi.impl.neomedia;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.Socket;
 
-import org.jitsi.service.libjitsi.*;
-import org.jitsi.service.packetlogging.*;
-import org.jitsi.util.*;
+import org.jitsi.service.libjitsi.LibJitsi;
+import org.jitsi.service.packetlogging.PacketLoggingService;
+import org.jitsi.util.Logger;
+import org.jitsi.util.ThreadUtils;
 
 /**
  * RTPConnectorInputStream implementation for TCP protocol.
@@ -53,8 +55,7 @@ public class RTPConnectorTCPInputStream
             }
 
             closed = false;
-            receiverThread = new Thread(this, "RTPConnectorTCPInputStreamThread");
-            receiverThread.start();
+            ThreadUtils.startThread(new Thread(this, "RTPConnectorUDPInputStreamThread"));
         }
     }
 

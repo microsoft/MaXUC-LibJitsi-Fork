@@ -31,7 +31,7 @@ public class AudioMediaFormatImpl
      * @param format the JMF <tt>AudioFormat</tt> the new instance is to wrap
      * and provide an implementation of <tt>AudioMediaFormat</tt> for
      */
-    AudioMediaFormatImpl(AudioFormat format)
+    public AudioMediaFormatImpl(AudioFormat format)
     {
         this(format, null, null);
     }

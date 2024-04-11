@@ -42,7 +42,7 @@ public class DOMElementWriter
      * The system-specific line separator as defined by the well-known system
      * property.
      */
-    private static final String lSep = System.getProperty("line.separator");
+    static final String lSep = System.getProperty("line.separator");
 
     /**
      * Decodes an XML (element) name according to

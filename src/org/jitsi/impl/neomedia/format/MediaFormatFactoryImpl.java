@@ -9,6 +9,8 @@ package org.jitsi.impl.neomedia.format;
 
 import java.util.*;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.jitsi.impl.neomedia.*;
 import org.jitsi.service.neomedia.*;
 import org.jitsi.service.neomedia.codec.*;
@@ -446,7 +448,8 @@ public class MediaFormatFactoryImpl
      * <tt>MediaService</tt> associated with this <tt>MediaFormatFactory</tt>
      * and having the specified encoding and, optionally, clock rate
      */
-    private List<MediaFormat> getSupportedMediaFormats(
+    @VisibleForTesting
+    public List<MediaFormat> getSupportedMediaFormats(
             String encoding, double clockRate)
     {
         EncodingConfiguration encodingConfiguration

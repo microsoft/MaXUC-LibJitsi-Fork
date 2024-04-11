@@ -72,7 +72,7 @@
   </condition>
 
   <!-- initialize destination directory -->
-  <condition property="native_install_dir" value="${native.libs}/windows">
+  <condition property="native_install_dir" value="${native.libs}/windows-64">
     <and>
       <isset property="is.running.windows"/>
       <equals arg1="${arch}" arg2="32" />
@@ -114,8 +114,6 @@
 
       <!-- common compiler flags -->
       <compilerarg value="-D_JNI_IMPLEMENTATION_" />
-      <compilerarg value="-m32" if="cross_32" unless="is.running.macos" />
-      <compilerarg value="-m64" if="cross_64" unless="is.running.macos" />
       <compilerarg value="-O2" />
       <compilerarg value="-std=c99" />
       <compilerarg value="-Wall" />
@@ -174,11 +172,13 @@
       <compilerarg value="-D_WIN32_WINNT=0x0502" if="is.running.windows" />
       <compilerarg value="-DWINVER=0x0502" if="is.running.windows" />
       <compilerarg value="-I${system.JAVA_HOME}/include/win32" if="is.running.windows" />
+      <compilerarg value="-m64" if="is.running.windows" />
 
+      <linkerarg value="-m64" if="is.running.windows" />
       <linkerarg value="-ojnawtrenderer.dll" if="is.running.windows" />
       <linkerarg value="-Wl,--kill-at" if="is.running.windows" />
       <linkerarg value="-L${system.JAVA_HOME}/lib" if="is.running.windows_32" />
-      <linkerarg value="-L${system.JAVA_HOME}/jre/bin" if="is.running.windows_64" />
+      <linkerarg value="-L${system.JAVA_HOME}/jre/bin" if="is.running.windows" />
       <linkerarg value="-ld3d9" location="end" if="is.running.windows" />
 
       <fileset dir="${src}/native/jawtrenderer" includes="org*.c JAWTRenderer_Windows.c" if="is.running.windows"/>
@@ -200,19 +200,17 @@
       <compilerarg value="-D_JNI_IMPLEMENTATION_" />
       <compilerarg value="-D_WIN32_WINNT=0x0600" />
       <compilerarg value="-DWINVER=0x0600" />
-      <compilerarg value="-m32" if="cross_32" />
-      <compilerarg value="-m64" if="cross_64" />
       <compilerarg value="-I${system.JAVA_HOME}/include" />
       <compilerarg value="-I${system.JAVA_HOME}/include/win32" />
       <compilerarg value="-O2" />
       <compilerarg value="-std=c99" />
       <compilerarg value="-Wall" />
+      <compilerarg value="-m64" if="is.running.windows" />
 
+      <linkerarg value="-m64" if="is.running.windows" />
       <linkerarg value="-ldmoguids" location="end" />
       <linkerarg value="-lmsdmo" location="end" />
       <linkerarg value="-lole32" location="end" />
-      <linkerarg value="-m32" if="cross_32" />
-      <linkerarg value="-m64" if="cross_64" />
       <linkerarg value="-ojnwasapi.dll" />
       <linkerarg value="-static-libgcc" />
       <linkerarg value="-Wl,--as-needed" />
@@ -236,21 +234,19 @@
         <compilerarg value="-DWINVER=0x0502" />
           <compilerarg value="-fno-exceptions" />
           <compilerarg value="-fno-rtti" />
-        <compilerarg value="-m32" if="cross_32" />
-        <compilerarg value="-m64" if="cross_64" />
         <compilerarg value="-I${system.JAVA_HOME}/include" />
         <compilerarg value="-I${system.JAVA_HOME}/include/win32" />
         <compilerarg value="-O2" />
         <compilerarg value="-Wall" />
+        <compilerarg value="-m64" if="is.running.windows" />
 
+        <linkerarg value="-m64" if="is.running.windows" />
         <linkerarg value="-lole32" location="end" />
         <linkerarg value="-loleaut32" location="end" />
         <linkerarg value="-lstrmiids" location="end" />
         <linkerarg value="-luuid" location="end" />
         <linkerarg value="-Wl,-Bstatic" location="end" />
         <linkerarg value="-lstdc++" location="end" />
-        <linkerarg value="-m32" if="cross_32" />
-        <linkerarg value="-m64" if="cross_64" />
         <linkerarg value="-ojndirectshow.dll" />
         <linkerarg value="-static-libgcc" />
         <linkerarg value="-Wl,--as-needed" />
@@ -311,7 +307,9 @@
       <!-- Windows specific flags -->
       <compilerarg value="-I${system.JAVA_HOME}/include" if="is.running.windows" />
       <compilerarg value="-I${system.JAVA_HOME}/include/win32" if="is.running.windows" />
+      <compilerarg value="-m64" if="is.running.windows" />
 
+      <linkerarg value="-m64" if="is.running.windows" />
       <linkerarg value="-ojnspeex.dll" if="is.running.windows" />
       <linkerarg value="-Wl,--kill-at" if="is.running.windows" />
       <linkerarg value="-static-libgcc" if="is.running.windows" />
@@ -373,7 +371,9 @@
       <!-- Windows specific flags -->
       <compilerarg value="-I${system.JAVA_HOME}/include" if="is.running.windows" />
       <compilerarg value="-I${system.JAVA_HOME}/include/win32" if="is.running.windows" />
+      <compilerarg value="-m64" if="is.running.windows" />
 
+      <linkerarg value="-m64" if="is.running.windows" />
       <linkerarg value="-ojng722.dll" if="is.running.windows" />
       <linkerarg value="-Wl,--kill-at" if="is.running.windows" />
 
@@ -437,7 +437,9 @@
             <!-- Windows specific flags -->
             <compilerarg value="-I${system.JAVA_HOME}/include" if="is.running.windows" />
             <compilerarg value="-I${system.JAVA_HOME}/include/win32" if="is.running.windows" />
+            <compilerarg value="-m64" if="is.running.windows" />
 
+            <linkerarg value="-m64" if="is.running.windows" />
             <linkerarg value="-ojnopus.dll" if="is.running.windows" />
             <linkerarg value="-Wl,--no-undefined" if="is.running.windows" />
             <linkerarg value="-Wl,--kill-at" if="is.running.windows" />
@@ -484,15 +486,13 @@
       <compilerarg value="-O2" />
       <compilerarg value="-Wall" />
       <compilerarg value="-xc++" />
-      <compilerarg value="-m32" if="cross_32" />
-      <compilerarg value="-m64" if="cross_64" />
+      <compilerarg value="-m64" if="is.running.windows" />
 
       <linkerarg value="-ojnwincoreaudio.dll" />
       <linkerarg value="-static-libgcc" />
       <linkerarg value="-Wl,--kill-at" />
       <libset libs="ole32" />
-      <linkerarg value="-m32" if="cross_32" />
-      <linkerarg value="-m64" if="cross_64" />
+      <linkerarg value="-m64" if="is.running.windows" />
 
       <fileset dir="${src}/native/windows/coreaudio" includes="*.c" />
     </cc>
@@ -790,8 +790,8 @@
       <compilerarg value="x86_64" />
       <compilerarg value="-mmacosx-version-min=10.12" />
       <compilerarg value="-I/System/Library/Frameworks/JavaVM.framework/Headers" />
-      <compilerarg value="-I/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home/include" />
-      <compilerarg value="-I/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home/include/darwin" />
+      <compilerarg value="-I/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/include" />
+      <compilerarg value="-I/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/include/darwin" />
 
       <linkerarg value="-o" location="end" />
       <linkerarg value="libjnavfoundation.jnilib" location="end" />

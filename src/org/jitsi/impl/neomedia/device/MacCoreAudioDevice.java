@@ -59,10 +59,34 @@ public class MacCoreAudioDevice
             boolean isOutputStream,
             boolean isEchoCancel);
 
+    /**
+     * Just a proxy call to native getMinimalNominalSampleRate method, since we
+     * cannot stub it with Mockito, it throws an exception.
+     */
+    public static float getMinimalNominalSampleRateJava(
+            String deviceUID,
+            boolean isOutputStream,
+            boolean isEchoCancel)
+    {
+        return getMinimalNominalSampleRate(deviceUID, isOutputStream, isEchoCancel);
+    }
+
     public static native float getMinimalNominalSampleRate(
             String deviceUID,
             boolean isOutputStream,
             boolean isEchoCancel);
+
+    /**
+     * Just a proxy call to native getMaximalNominalSampleRateJava method, since we
+     * cannot stub it with Mockito, it throws an exception.
+     */
+    public static float getMaximalNominalSampleRateJava(
+            String deviceUID,
+            boolean isOutputStream,
+            boolean isEchoCancel)
+    {
+        return getMaximalNominalSampleRate(deviceUID, isOutputStream, isEchoCancel);
+    }
 
     public static native float getMaximalNominalSampleRate(
             String deviceUID,
@@ -91,6 +115,34 @@ public class MacCoreAudioDevice
 
     public static native byte[] getDefaultOutputDeviceUIDBytes();
 
+    /**
+     * Just a proxy call to native startStream method, since we
+     * cannot stub it with Mockito, it throws an exception.
+     */
+    public static long startStreamJava(
+            String deviceUID,
+            Object callback,
+            float sampleRate,
+            int nbChannels,
+            int bitsPerChannel,
+            boolean isFloat,
+            boolean isBigEndian,
+            boolean isNonInterleaved,
+            boolean isInput,
+            boolean isEchoCancel)
+    {
+        return startStream(deviceUID,
+                           callback,
+                           sampleRate,
+                           nbChannels,
+                           bitsPerChannel,
+                           isFloat,
+                           isBigEndian,
+                           isNonInterleaved,
+                           isInput,
+                           isEchoCancel);
+    }
+
     public static native long startStream(
             String deviceUID,
             Object callback,
@@ -107,5 +159,13 @@ public class MacCoreAudioDevice
 
     public static native int countInputChannels(String deviceUID);
 
+    /**
+     * Just a proxy call to native countOutputChannels method, since we
+     * cannot stub it with Mockito, it throws an exception.
+     */
+    public static int countOutputChannelsJava(String deviceUID)
+    {
+        return countOutputChannels(deviceUID);
+    }
     public static native int countOutputChannels(String deviceUID);
 }

@@ -10,6 +10,7 @@ package org.jitsi.impl.neomedia;
 import java.io.*;
 import java.net.*;
 
+import org.jitsi.util.ThreadUtils;
 import org.jitsi.service.libjitsi.*;
 import org.jitsi.service.packetlogging.*;
 import org.jitsi.util.Logger;
@@ -47,8 +48,7 @@ public class RTPConnectorUDPInputStream extends RTPConnectorInputStream
         if (socket != null)
         {
             closed = false;
-            receiverThread = new Thread(this, "RTPConnectorUDPInputStreamThread");
-            receiverThread.start();
+            ThreadUtils.startThread(new Thread(this, "RTPConnectorUDPInputStreamThread"));
         }
     }
 

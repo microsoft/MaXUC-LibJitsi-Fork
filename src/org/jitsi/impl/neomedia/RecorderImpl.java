@@ -7,6 +7,8 @@
 // Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia;
 
+import static org.jitsi.util.SanitiseUtils.*;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
@@ -43,6 +45,8 @@ public class RecorderImpl
                     SoundFileUtils.mp3,
                     SoundFileUtils.wav
                 };
+
+    private static final String REDACTED = "<redacted>";
 
     private static final Logger sLogger = Logger.getLogger(RecorderImpl.class);
 
@@ -299,7 +303,7 @@ public class RecorderImpl
                     stop();
 
                     throw new MediaException(
-                            "Failed to start recording into file " + filename,
+                            "Failed to start recording into file " + sanitisePath(filename),
                             exception);
                 }
             }
@@ -314,7 +318,7 @@ public class RecorderImpl
                         new Recorder.Listener[this.listeners.size()]);
         }
 
-        sLogger.info("RecorderImpl " + this + " started at file " + filename);
+        sLogger.info("RecorderImpl " + this + " started at file " + sanitisePath(filename));
 
         for (Recorder.Listener listener : listeners)
             listener.recorderStarted(this);

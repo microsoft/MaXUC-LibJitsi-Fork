@@ -310,6 +310,14 @@ public abstract class AudioSystem
     }
 
     /**
+     * Renderer initialization for testing purposes
+     * @return
+     */
+    public Renderer createSuperRenderer() {
+        return super.createRenderer();
+    }
+
+    /**
      * Obtains an audio input stream from the URL provided.
      * @param uri a valid uri to a sound resource.
      * @return the input stream to audio data.
@@ -603,5 +611,37 @@ public abstract class AudioSystem
         // The notify devices are the same as the playback devices.
         deviceListManagers.get(DataFlow.PLAYBACK).setActiveDevices(playbackDevices);
         deviceListManagers.get(DataFlow.NOTIFY).setActiveDevices(playbackDevices);
+    }
+
+    public static class RendererWrapper
+    {
+        public RendererWrapper(Renderer renderer, boolean superCreateRenderer)
+        {
+            this.renderer = renderer;
+            this.superCreateRenderer = superCreateRenderer;
+        }
+
+        private Renderer renderer;
+        private boolean superCreateRenderer;
+
+        public Renderer getRenderer()
+        {
+            return renderer;
+        }
+
+        public void setRenderer(Renderer renderer)
+        {
+            this.renderer = renderer;
+        }
+
+        public boolean isSuperCreateRenderer()
+        {
+            return superCreateRenderer;
+        }
+
+        public void setSuperCreateRenderer(boolean superCreateRenderer)
+        {
+            this.superCreateRenderer = superCreateRenderer;
+        }
     }
 }

@@ -66,37 +66,6 @@ public class FileAccessServiceImpl implements FileAccessService
     }
 
     /**
-     * This method returns a created temporary file. After you close this file
-     * it is not guaranteed that you will be able to open it again nor that it
-     * will contain any information.
-     *
-     * Note: DO NOT store unencrypted sensitive information in this file
-     *
-     * @return The created temporary file
-     * @throws IOException
-     *             If the file cannot be created
-     */
-    @Override
-    public File getTemporaryFile() throws IOException
-    {
-        File retVal = null;
-
-        try
-        {
-            logger.entry();
-
-            retVal = TempFileManager.createTempFile(TEMP_FILE_PREFIX,
-                    TEMP_FILE_SUFFIX);
-        }
-        finally
-        {
-            logger.exit();
-        }
-
-        return retVal;
-    }
-
-    /**
      * This method returns a file specific to the current Computer user. It may not
      * exist, but it is guaranteed that you will have the sufficient rights to
      * create it, and that its parent directory exists.

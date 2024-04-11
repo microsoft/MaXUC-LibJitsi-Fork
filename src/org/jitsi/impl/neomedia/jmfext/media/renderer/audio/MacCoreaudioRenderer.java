@@ -299,7 +299,7 @@ public class MacCoreaudioRenderer
                 // The maximum output channels may be a lot and checking all of
                 // them will take a lot of time. Besides, we currently support
                 // at most 2.
-                int maxOutputChannels = Math.min(MacCoreAudioDevice.countOutputChannels(deviceUID), 2);
+                int maxOutputChannels = Math.min(MacCoreAudioDevice.countOutputChannelsJava(deviceUID), 2);
                 List<Format> supportedInputFormats = new ArrayList<>(SUPPORTED_INPUT_FORMATS.length);
 
                 for (Format supportedInputFormat : SUPPORTED_INPUT_FORMATS)
@@ -367,16 +367,16 @@ public class MacCoreaudioRenderer
 
     private float getDeviceMinimalNominalSampleRate(String deviceUID)
     {
-        return MacCoreAudioDevice.getMinimalNominalSampleRate(deviceUID,
-                                                              true,
-                                                              MacCoreaudioSystem.isEchoCancelActivated());
+        return MacCoreAudioDevice.getMinimalNominalSampleRateJava(deviceUID,
+                                                                  true,
+                                                                  MacCoreaudioSystem.isEchoCancelActivated());
     }
 
     private float getDeviceMaximalNominalSampleRate(String deviceUID)
     {
-        return MacCoreAudioDevice.getMaximalNominalSampleRate(deviceUID,
-                                                              true,
-                                                              MacCoreaudioSystem.isEchoCancelActivated());
+        return MacCoreAudioDevice.getMaximalNominalSampleRateJava(deviceUID,
+                                                                  true,
+                                                                  MacCoreaudioSystem.isEchoCancelActivated());
     }
 
     /**
@@ -624,7 +624,7 @@ public class MacCoreaudioRenderer
                     logger.debug("Call on MacCoreAudioDevice: startStream(" +
                                                isEchoCancel + ")");
                     stream
-                        = MacCoreAudioDevice.startStream(
+                        = MacCoreAudioDevice.startStreamJava(
                                 deviceUID,
                                 this,
                                 (float) inputFormat.getSampleRate(),

@@ -70,11 +70,6 @@ public abstract class RTPConnectorInputStream
     private SourceTransferHandler transferHandler;
 
     /**
-     * The Thread receiving packets.
-     */
-    protected Thread receiverThread = null;
-
-    /**
      * The <tt>DatagramPacketFilter</tt>s which allow dropping
      * <tt>DatagramPacket</tt>s before they are converted into
      * <tt>RawPacket</tt>s.

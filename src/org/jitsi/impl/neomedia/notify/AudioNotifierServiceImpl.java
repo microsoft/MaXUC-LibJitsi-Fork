@@ -7,6 +7,8 @@
 // Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.notify;
 
+import static org.jitsi.util.SanitiseUtils.*;
+
 import java.beans.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -116,7 +118,8 @@ public class AudioNotifierServiceImpl
      */
     public SCAudioClip createAudio(String uri, boolean playback)
     {
-        logger.debug("Create audio: " + uri +
+        String sanitisedUri = sanitisePath(uri);
+        logger.debug("Create audio: " + sanitisedUri +
                      ". Use playpack device? " + playback);
         SCAudioClip audio;
 
@@ -134,7 +137,7 @@ public class AudioNotifierServiceImpl
 
             if (audio == null)
             {
-                logger.debug("AudioKey " + uri + " was not cached");
+                logger.debug("AudioKey " + sanitisedUri + " was not cached");
                 try
                 {
                     AudioSystem audioSystem
@@ -142,7 +145,7 @@ public class AudioNotifierServiceImpl
 
                     if (audioSystem == null)
                     {
-                        logger.warn("Audio system was null when loading " + uri +
+                        logger.warn("Audio system was null when loading " + sanitisedUri +
                                 "; use JavaSoundClip");
                         audio = new JavaSoundClipImpl(uri, this);
                     }
@@ -150,13 +153,13 @@ public class AudioNotifierServiceImpl
                             audioSystem.getLocatorProtocol()))
                     {
                         logger.warn("NoneAudioSystem enabled when loading " +
-                                    uri + "; unable to create clip");
+                                    sanitisedUri + "; unable to create clip");
 
                         audio = null;
                     }
                     else
                     {
-                        logger.debug("Audio system ready for " + uri + "; " +
+                        logger.debug("Audio system ready for " + sanitisedUri + "; " +
                                      " create as AudioSystemClipImpl");
                         audio
                             = new AudioSystemClipImpl(
@@ -175,7 +178,7 @@ public class AudioNotifierServiceImpl
                     // If we do OOM for an unrelated reason, we'll probably
                     // hit it again elsewhere soon and deal with it there.
 
-                    logger.error("Failed to create clip " + uri, t);
+                    logger.error("Failed to create clip " + sanitisedUri, t);
 
                     if (t instanceof ThreadDeath)
                     {

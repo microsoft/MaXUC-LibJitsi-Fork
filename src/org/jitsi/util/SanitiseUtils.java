@@ -37,6 +37,8 @@ public final class SanitiseUtils
      */
     public static final String NULL_STRING = "null";
 
+    private static final String REDACTED = "<redacted>";
+
     /** Standard logger for the class. */
     private static final Logger logger = Logger.getLogger(SanitiseUtils.class);
 
@@ -285,6 +287,32 @@ public final class SanitiseUtils
         return sanitised instanceof JSONObject ?
                 StringEscapeUtils.unescapeJson(((JSONObject) sanitised).toJSONString()) :
                 String.valueOf(sanitised);
+    }
+
+    /**
+     * Removes PII from any filepath(s) in a string by removing the username.
+     *
+     * Eg "C:\Users\USERNAME\folder;C:\Users\USERNAME" will be
+     * replaced with "C:\Users\<redacted>\folder;C:\Users\<redacted>"
+     *
+     * If passed something where the username is the last part of the filepath, any following
+     * information will be eaten up to the next delimiter
+     * example: "C:\Users\USERNAME is a file path" will become "C:\Users\<redacted>"
+     *
+     * @param stringToSanitise The string to be treated.
+     * @return A string with the relevant PII removed
+     */
+    public static String sanitisePath(String stringToSanitise)
+    {
+        if (stringToSanitise == null) {
+            return null;
+        }
+        // replace anything following the string "users/" or "users\" (case
+        // insensitive) up to the next /\;:
+        // \\\\ makes one \ as you have to escape \ once in regex, and each \
+        // once in java
+        return stringToSanitise.replaceAll("(?i)(?<=users[/\\\\])[^/\\\\;:]+",
+                                           REDACTED);
     }
 
     /**

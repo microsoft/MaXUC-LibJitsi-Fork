@@ -7,6 +7,8 @@
 // Portions (c) Microsoft Corporation. All rights reserved.
 package org.jitsi.impl.neomedia.notify;
 
+import static org.jitsi.util.SanitiseUtils.*;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -195,7 +197,7 @@ public class AudioSystemClipImpl
     public boolean renderAudio(Renderer renderer, boolean notifyListeners)
     {
         InputStream audioStream = null;
-        logger.debug("Rendering audio " + uri + "...");
+        logger.debug("Rendering audio " + getLoggableUri() + "...");
 
         try
         {
@@ -203,13 +205,13 @@ public class AudioSystemClipImpl
         }
         catch (IOException ioex)
         {
-            logger.error("Failed to get audio stream " + uri, ioex);
+            logger.error("Failed to get audio stream " + getLoggableUri(), ioex);
             return false;
         }
 
         if (audioStream == null)
         {
-            logger.error("Audio stream " + uri + " unexpectedly null.");
+            logger.error("Audio stream " + getLoggableUri() + " unexpectedly null.");
             return false;
         }
 
@@ -224,19 +226,19 @@ public class AudioSystemClipImpl
             if (rendererFormat == null)
             {
                 logger.error("Renderer format was unexpectedly null for " +
-                             uri);
+                             getLoggableUri());
                 return false;
             }
             else if (renderer == null)
             {
-                logger.error("Renderer was unexpectedly null for " + uri);
+                logger.error("Renderer was unexpectedly null for " + getLoggableUri());
                 return false;
             }
 
             double sampleRate = ((AudioFormat)rendererFormat).getSampleRate();
             if (sampleRate > MediaUtils.MAX_AUDIO_SAMPLE_RATE)
             {
-                logger.error("The audio data at " + uri + " has a sample rate "+
+                logger.error("The audio data at " + getLoggableUri() + " has a sample rate "+
                              "of " + sampleRate + "Hz, exceeding the maximum " +
                              "of " + MediaUtils.MAX_AUDIO_SAMPLE_RATE + "Hz," +
                              " and so was not rendered.");
@@ -316,7 +318,7 @@ public class AudioSystemClipImpl
 
             if (buffer == null)
             {
-                logger.error("Audio buffer was not initialized for " + uri + "," +
+                logger.error("Audio buffer was not initialized for " + getLoggableUri() + "," +
                              " so audio could not be rendered.");
                 return false;
             }
@@ -402,7 +404,7 @@ public class AudioSystemClipImpl
                         rendererProcess = renderer.process(rendererBuffer);
                         if (rendererProcess == Renderer.BUFFER_PROCESSED_FAILED)
                         {
-                            logger.error("Failed to render audio stream " + uri);
+                            logger.error("Failed to render audio stream " + getLoggableUri());
 
                             return false;
                         }
@@ -423,7 +425,7 @@ public class AudioSystemClipImpl
             }
             catch (IOException ioex)
             {
-                logger.error("Failed to read from audio stream " + uri, ioex);
+                logger.error("Failed to read from audio stream " + getLoggableUri(), ioex);
                 return false;
             }
             catch (ResourceUnavailableException ruex)
@@ -471,6 +473,16 @@ public class AudioSystemClipImpl
     }
 
     /**
+     * Hashes sensitive parts of the uri
+     *
+     * @return uri with hashed PII
+     */
+    private String getLoggableUri()
+    {
+        return sanitisePath(uri);
+    }
+
+    /**
      * Logs an extract from the start and end of the audio file, for debugging
      * purposes. Works in its own thread.
      */
@@ -502,7 +514,7 @@ public class AudioSystemClipImpl
             }
             catch (MalformedURLException e)
             {
-                logger.error("Could not log audio data: uri " + uri +
+                logger.error("Could not log audio data: uri " + getLoggableUri() +
                              " was invalid.", e);
                 return;
             }
@@ -516,7 +528,7 @@ public class AudioSystemClipImpl
         catch (IOException ioex)
         {
             logger.error("Could not log audio data: " +
-                         "failed to get audio stream " + uri, ioex);
+                         "failed to get audio stream " + getLoggableUri(), ioex);
             return;
         }
 
@@ -546,7 +558,7 @@ public class AudioSystemClipImpl
             }
         }
 
-        logger.error("Failed to play audio file at " + uri + " started with:\n"+
+        logger.error("Failed to play audio file at " + getLoggableUri() + " started with:\n"+
                      Arrays.toString(header));
 
         LimitedQueue<Integer> lastFewBytes =
@@ -575,7 +587,7 @@ public class AudioSystemClipImpl
             }
         }
 
-        logger.error("Invalid audio file at " + uri + " ended with:\n"+
+        logger.error("Invalid audio file at " + getLoggableUri() + " ended with:\n"+
                      lastFewBytes.toString());
     }
 
