@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.jitsi.impl.neomedia.control.DiagnosticsControl.MalfunctionState;
-import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.VoiceCaptureDSP.*;
-import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.WASAPI.*;
+import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.VoiceCaptureDSPProxy.*;
+import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.WASAPIProxy.*;
 
 /**
  * Implements a <tt>PullBufferStream</tt> using Windows Audio Session API
@@ -259,7 +259,7 @@ public class WASAPIStream
         {
             WAVEFORMATEX_fill(
                     waveformatex,
-                    WAVE_FORMAT_PCM,
+                    WASAPI.WAVE_FORMAT_PCM,
                     nChannels,
                     nSamplesPerSec,
                     nSamplesPerSec * nBlockAlign,
@@ -278,12 +278,12 @@ public class WASAPIStream
                 hresult
                     = DMO_MEDIA_TYPE_fill(
                             pmt,
-                            /* majortype */ MEDIATYPE_Audio,
-                            /* subtype */ MEDIASUBTYPE_PCM,
+                            /* majortype */ VoiceCaptureDSP.MEDIATYPE_Audio,
+                            /* subtype */ VoiceCaptureDSP.MEDIASUBTYPE_PCM,
                             /* bFixedSizeSamples */ true,
                             /* bTemporalCompression */ false,
                             wBitsPerSample / 8,
-                            /* formattype */ FORMAT_WaveFormatEx,
+                            /* formattype */ VoiceCaptureDSP.FORMAT_WaveFormatEx,
                             /* pUnk */ 0,
                             cbFormat,
                             waveformatex);
@@ -291,12 +291,12 @@ public class WASAPIStream
                     throw new HResultException(hresult, "DMO_MEDIA_TYPE_fill");
                 hresult
                     = inOrOut
-                        ? VoiceCaptureDSP.IMediaObject_SetInputType(
+                        ? IMediaObject_SetInputType(
                                 iMediaObject,
                                 dwXXXputStreamIndex,
                                 pmt,
                                 dwFlags)
-                        : VoiceCaptureDSP.IMediaObject_SetOutputType(
+                        : IMediaObject_SetOutputType(
                                 iMediaObject,
                                 dwXXXputStreamIndex,
                                 pmt,
@@ -318,7 +318,7 @@ public class WASAPIStream
                  * has not been internally allocated by MoInitMediaType.
                  */
                 DMO_MEDIA_TYPE_setCbFormat(pmt, 0);
-                DMO_MEDIA_TYPE_setFormattype(pmt, FORMAT_None);
+                DMO_MEDIA_TYPE_setFormattype(pmt, VoiceCaptureDSP.FORMAT_None);
                 DMO_MEDIA_TYPE_setPbFormat(pmt, 0);
                 MoDeleteMediaType(pmt);
             }
@@ -844,11 +844,11 @@ public class WASAPIStream
          */
         try
         {
-            if (MFPKEY_WMAAECMA_FEATURE_MODE != 0)
+            if (VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATURE_MODE != 0)
             {
                 IPropertyStore_SetValue(
                         iPropertyStore,
-                        MFPKEY_WMAAECMA_FEATURE_MODE, true);
+                        VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATURE_MODE, true);
 
                 AudioSystem audioSystem = dataSource.audioSystem;
 
@@ -856,42 +856,42 @@ public class WASAPIStream
                  * Perform acoustic echo suppression (AEC) on the residual
                  * signal a maximum number of times.
                  */
-                if (MFPKEY_WMAAECMA_FEATR_AES != 0)
+                if (VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATR_AES != 0)
                 {
                     IPropertyStore_SetValue(
                             iPropertyStore,
-                            MFPKEY_WMAAECMA_FEATR_AES,
+                            VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATR_AES,
                             audioSystem.isEchoCancel() ? 2 : 0);
                 }
                 // Do not perform automatic gain control (AGC).
-                if (MFPKEY_WMAAECMA_FEATR_AGC != 0)
+                if (VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATR_AGC != 0)
                 {
                     IPropertyStore_SetValue(
                             iPropertyStore,
-                            MFPKEY_WMAAECMA_FEATR_AGC,
+                            VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATR_AGC,
                             false);
                 }
                 // Don't perform mic gain bounding.
-                if (MFPKEY_WMAAECMA_MIC_GAIN_BOUNDER != 0)
+                if (VoiceCaptureDSP.MFPKEY_WMAAECMA_MIC_GAIN_BOUNDER != 0)
                 {
                     IPropertyStore_SetValue(
                             iPropertyStore,
-                            MFPKEY_WMAAECMA_MIC_GAIN_BOUNDER,
+                            VoiceCaptureDSP.MFPKEY_WMAAECMA_MIC_GAIN_BOUNDER,
                             false);
                 }
                 // Perform noise suppression (NS).
-                if (MFPKEY_WMAAECMA_FEATR_NS != 0)
+                if (VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATR_NS != 0)
                 {
                     IPropertyStore_SetValue(
                             iPropertyStore,
-                            MFPKEY_WMAAECMA_FEATR_NS,
+                            VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATR_NS,
                             audioSystem.isDenoise() ? 1 : 0);
                 }
-                if (MFPKEY_WMAAECMA_FEATR_ECHO_LENGTH != 0)
+                if (VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATR_ECHO_LENGTH != 0)
                 {
                     IPropertyStore_SetValue(
                             iPropertyStore,
-                            MFPKEY_WMAAECMA_FEATR_ECHO_LENGTH,
+                            VoiceCaptureDSP.MFPKEY_WMAAECMA_FEATR_ECHO_LENGTH,
                             256);
                 }
             }
@@ -1410,7 +1410,7 @@ public class WASAPIStream
         try
         {
             long iPropertyStore
-                = IMediaObject_QueryInterface(iMediaObject, IID_IPropertyStore);
+                = IMediaObject_QueryInterface(iMediaObject, VoiceCaptureDSP.IID_IPropertyStore);
 
             if (iPropertyStore == 0)
             {
@@ -1422,7 +1422,7 @@ public class WASAPIStream
                 int hresult
                     = IPropertyStore_SetValue(
                             iPropertyStore,
-                            MFPKEY_WMAAECMA_DMO_SOURCE_MODE,
+                            VoiceCaptureDSP.MFPKEY_WMAAECMA_DMO_SOURCE_MODE,
                             sourceMode);
 
                 if (FAILED(hresult))
@@ -1719,8 +1719,8 @@ public class WASAPIStream
         long startTime = System.currentTimeMillis();
         int captureDeviceIndex
             = audioSystem.getIMMDeviceIndex(
-                    captureDevice.getLocator().getRemainder(),
-                    eCapture);
+                captureDevice.getLocator().getRemainder(),
+                WASAPI.eCapture);
         long endTime = System.currentTimeMillis();
         logger.info("getIMMDeviceIndex took " + (endTime-startTime));
 
@@ -1734,8 +1734,8 @@ public class WASAPIStream
         MediaLocator renderLocator = renderDevice.getLocator();
         int renderDeviceIndex
             = audioSystem.getIMMDeviceIndex(
-                    renderLocator.getRemainder(),
-                    eRender);
+                renderLocator.getRemainder(),
+                WASAPI.eRender);
 
         if (renderDeviceIndex == -1)
         {
@@ -1747,7 +1747,7 @@ public class WASAPIStream
         int hresult
             = IPropertyStore_SetValue(
                     iPropertyStore,
-                    MFPKEY_WMAAECMA_DEVICE_INDEXES,
+                    VoiceCaptureDSP.MFPKEY_WMAAECMA_DEVICE_INDEXES,
                     ((0x0000ffff & captureDeviceIndex))
                         | ((0x0000ffff & renderDeviceIndex) << 16));
 
@@ -1947,7 +1947,7 @@ public class WASAPIStream
             maxLength = bufferMaxLength;
 
         long pBuffer = oBuffer.ptr;
-        int hresult = S_OK;
+        int hresult = WASAPI.S_OK;
 
         do
         {
@@ -1981,8 +1981,8 @@ public class WASAPIStream
                 hresult = hre.getHResult();
                 logger.error("IMediaObject_GetInputStatus", hre);
             }
-            if ((dwFlags & DMO_INPUT_STATUSF_ACCEPT_DATA)
-                    == DMO_INPUT_STATUSF_ACCEPT_DATA)
+            if ((dwFlags & VoiceCaptureDSP.DMO_INPUT_STATUSF_ACCEPT_DATA)
+                    == VoiceCaptureDSP.DMO_INPUT_STATUSF_ACCEPT_DATA)
             {
                 /*
                  * The specified input stream reports that it accepts input data
@@ -2117,7 +2117,7 @@ public class WASAPIStream
                 catch (HResultException hre)
                 {
                     hresult = hre.getHResult();
-                    if (hresult != DMO_E_NOTACCEPTING)
+                    if (hresult != VoiceCaptureDSP.DMO_E_NOTACCEPTING)
                         logger.error("IMediaObject_ProcessInput", hre);
                 }
                 break; // XXX We risk a busy wait unless we break here.
@@ -2203,8 +2203,8 @@ public class WASAPIStream
                 break;
             }
         }
-        while ((dwStatus & DMO_OUTPUT_DATA_BUFFERF_INCOMPLETE)
-                == DMO_OUTPUT_DATA_BUFFERF_INCOMPLETE);
+        while ((dwStatus & VoiceCaptureDSP.DMO_OUTPUT_DATA_BUFFERF_INCOMPLETE)
+                == VoiceCaptureDSP.DMO_OUTPUT_DATA_BUFFERF_INCOMPLETE);
     }
 
     private int mediaObjectProcessOutput(long iMediaObject, long dmoOutputDataBuffer) throws HResultException
@@ -2265,7 +2265,7 @@ public class WASAPIStream
                     dwStatus = 0;
                 }
             }
-            else if (HRESULT_BLOCKLIST.contains(hre.getHResult()))
+            else if (WASAPI.HRESULT_BLOCKLIST.contains(hre.getHResult()))
             {
                 // We have hit an error that we cannot recover the device from,
                 // so reset it here. This causes the current audio stream to
@@ -2363,8 +2363,8 @@ public class WASAPIStream
                     = (newRenderDevice == null)
                         ? -1
                         : audioSystem.getIMMDeviceIndex(
-                                newRenderDevice.getRemainder(),
-                                eRender);
+                        newRenderDevice.getRemainder(),
+                        WASAPI.eRender);
 
                 renderDeviceDidChange
                     = (oldRenderDeviceIndex != newRenderDeviceIndex);

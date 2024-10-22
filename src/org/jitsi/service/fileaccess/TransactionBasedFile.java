@@ -71,7 +71,7 @@ public class TransactionBasedFile
         {
             try
             {
-                Files.copy(mFile.toPath(), mBackupFile.toPath(), COPY_OPTIONS);
+                Files.copy(mFile.toPath(), mBackupFile.toPath(), COPY_OPTIONS); // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
             }
             catch (IOException e)
             {
@@ -92,7 +92,7 @@ public class TransactionBasedFile
         try
         {
             // Pretend to append, rather than overwriting the file with nothing
-            FileOutputStream out = new FileOutputStream(fileToSync, true);
+            FileOutputStream out = new FileOutputStream(fileToSync, true); // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
             if (out != null)
             {
                 try
@@ -140,7 +140,7 @@ public class TransactionBasedFile
             logger.debug("Replace config file size " +
                          size1 + "->" + size2);
             Files.move(mTempFile.toPath(),
-                       mFile.toPath(),
+                       mFile.toPath(), // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
                        StandardCopyOption.ATOMIC_MOVE);
 
             syncFileToDisk(mFile);
@@ -226,7 +226,7 @@ public class TransactionBasedFile
         File configFileResult = configFile;
         File backupConfigFile = new File(configFile.getPath() + BACKUP_SUFFIX);
 
-        if (backupConfigFile.exists() && backupConfigFile.length() > 0)
+        if (backupConfigFile.exists() && backupConfigFile.length() > 0) // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
         {
             // Let's try and repair the situation by copying the backup
             // file onto the new location.
@@ -235,8 +235,8 @@ public class TransactionBasedFile
 
             try
             {
-                Files.move(backupConfigFile.toPath(),
-                           configFile.toPath(),
+                Files.move(backupConfigFile.toPath(), // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
+                           configFile.toPath(), // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
                            StandardCopyOption.ATOMIC_MOVE);
 
                 configFileResult = new File(configFile.getPath());

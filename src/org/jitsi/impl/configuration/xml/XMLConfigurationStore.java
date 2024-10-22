@@ -204,7 +204,7 @@ public class XMLConfigurationStore
             if(file.length() < "<sip-communicator>".length()*2)
                 propertiesDocument = createPropertiesDocument();
             else
-                propertiesDocument = builder.parse(file);
+                propertiesDocument = builder.parse(file); // CodeQL [SM00704] Not Exploitable. The XML is not user provided.
 
             Node root = propertiesDocument.getFirstChild();
 

@@ -161,7 +161,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
         configWritePending = false;
         lastConfigWriteTime = 0;
 
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
+        RuntimeUtils.addShutdownHook(shutdownHook);
 
         try
         {
@@ -1017,7 +1017,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
                                     : name)
                                 + ".properties");
 
-                if (newConfigurationFile.exists())
+                if (newConfigurationFile.exists()) // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
                 {
                     // If there's an actual file with the .properties extension,
                     // then we've previously migrated the configuration from the XML
@@ -1044,7 +1044,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
                         defaultConfigurationStoreClass
                             = getDefaultConfigurationStoreClass();
 
-                    if (configurationFile.exists())
+                    if (configurationFile.exists()) // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
                     {
                         // The .xml is not forced on us so we allow ourselves to not
                         // obey the default and use the properties format. If a
@@ -1111,7 +1111,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
                     logger.debug("Forced to use .xml configuration file.");
 
                     this.configurationFile =
-                            configurationFile.exists()
+                            configurationFile.exists() // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
                                 ? configurationFile
                                 : getConfigurationFile("xml", true);
                     if (!(this.store instanceof XMLConfigurationStore))
@@ -1255,7 +1255,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
 
         // Try to open the file in current directory
         File configFileInCurrentDir = new File(pFileName);
-        if (configFileInCurrentDir.exists())
+        if (configFileInCurrentDir.exists()) // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
         {
             logger.debug("Using config file in current directory.");
 
@@ -1277,7 +1277,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
         //
         // So let's take a look to see if this file actually exists.  If it
         // doesn't that is very interesting, and we should take a closer look.
-        if (!configFileInUserHomeDir.exists() ||
+        if (!configFileInUserHomeDir.exists() || // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
              configFileInUserHomeDir.length() == 0)
         {
             logger.debug("No config file, attempting recovery");
@@ -1285,7 +1285,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
                     TransactionBasedFile.attemptRecovery(configFileInUserHomeDir);
         }
 
-        if (configFileInUserHomeDir.exists())
+        if (configFileInUserHomeDir.exists()) // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
         {
             logger.debug("Using config file in $HOME/.sip-communicator, size=" + configFileInUserHomeDir.length());
 
@@ -1294,7 +1294,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
 
         // If we are in a jar - copy config file from jar to user home.
         InputStream in
-            = getClass().getClassLoader().getResourceAsStream(pFileName);
+            = getClass().getClassLoader().getResourceAsStream(pFileName); // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
 
         // Return an empty file if there wasn't any in the jar
         // null check report from John J. Barton - IBM
@@ -1303,7 +1303,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
             if (create)
             {
                 configDir.mkdirs();
-                configFileInUserHomeDir.createNewFile();
+                configFileInUserHomeDir.createNewFile(); // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
 
                 logger.debug("Created an empty file in $HOME");
             }
@@ -1410,7 +1410,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
         throws IOException
     {
 
-        try (OutputStream outputStream = new FileOutputStream(outputFile))
+        try (OutputStream outputStream = new FileOutputStream(outputFile)) // CodeQL [SM00698] Not Exploitable. The file/path is not user provided. // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
         {
             byte[] bytes = new byte[4 * 1024];
             int bytesRead;
@@ -1632,7 +1632,7 @@ public abstract class AbstractScopedConfigurationServiceImpl
 
                 Properties fileProps = new Properties();
 
-                fileProps.load(ClassLoader.getSystemResourceAsStream(fileName));
+                fileProps.load(ClassLoader.getSystemResourceAsStream(fileName)); // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
 
                 // Now set all of this file's properties as system properties
                 for (Map.Entry<Object, Object> entry : fileProps.entrySet())

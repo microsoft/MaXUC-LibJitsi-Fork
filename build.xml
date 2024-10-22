@@ -71,16 +71,18 @@
 
     <target name="resolve-dependencies" description="Get our dependencies." depends="buildtools.init-ivy" unless="skip-resolve-libjitsi-dependencies" >
         <ivy:settings file="${project.basedir}/ivysettings.xml" />
-        <ivy:resolve file="${lj.basedir}/ivy.xml" transitive="true" conf="lib,runtime"/>
+        <retry retrycount="3" retrydelay="5000">
+            <ivy:resolve file="${lj.basedir}/ivy.xml" transitive="true" conf="lib,runtime"/>
+        </retry>
         <ivy:retrieve conf="lib" pattern="${lj.basedir}/lib/[artifact].[ext]" overwriteMode="different" />
         <property name="resolve-libjitsi-dependencies-done" value="true" />
     </target>
 
     <target name="resolve-native-dependencies" description="Get our native dependencies." depends="buildtools.init-ivy" unless="skip-resolve-libjitsi-dependencies" >
-        <ivy:settings file="${ext}/ivysettings.xml" />
+        <ivy:settings file="${project.basedir}/ivysettings.xml" />
         <ivy:resolve file="${lj.basedir}/ivy.xml" transitive="true" />
-        <ivy:retrieve conf="nativewindows" pattern="${lj.basedir}/lib/native/windows/[artifact].[ext]" overwriteMode="different"/>
-        <ivy:retrieve conf="nativemac" pattern="${lj.basedir}/lib/native/mac/[artifact].[ext]" overwriteMode="different"/>
+        <ivy:retrieve conf="nativewindows" pattern="${lj.basedir}/lib/native/windows-64/[basename].[ext]" overwriteMode="different"/>
+        <ivy:retrieve conf="nativemac" pattern="${lj.basedir}/lib/native/mac/[basename].[ext]" overwriteMode="different"/>
     </target>
 
     <target name="compile" depends="-init-paths">

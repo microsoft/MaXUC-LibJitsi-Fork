@@ -39,14 +39,13 @@ public class DecodeFrame
         final int                     nBytes,           /* I    Payload length                              */
         int                           action,           /* I    Action from Jitter Buffer                   */
         int[]                         decBytes,         /* O    Used bytes to decode this frame             */
-        double                        frameRate,
         final DecodeMem               mem
     )
     {
         SKP_Silk_decoder_control sDecCtrl = mem.SKP_Silk_decode_frame__sDecCtrl;
         sDecCtrl.zero();
 
-        int   L, LPC_order_old, ret = 0;
+        int   L, fs_Khz_old, LPC_order_old, ret = 0;
         int[] Pulses = mem.zero(mem.SKP_Silk_decode_frame__Pulses);
 
         L = psDec.frame_length;
@@ -63,6 +62,7 @@ public class DecodeFrame
             /********************************************/
             /* Initialize arithmetic coder              */
             /********************************************/
+            fs_Khz_old    = psDec.fs_kHz;
             LPC_order_old = psDec.LPC_order;
             if( psDec.nFramesDecoded == 0 ) {
                 /* Initialize range decoder state */
@@ -72,12 +72,12 @@ public class DecodeFrame
             /* Decode parameters and pulse signal       */
             /********************************************/
             DecodeParameters.SKP_Silk_decode_parameters( psDec, sDecCtrl, Pulses, 1, mem );
-            DecoderSetFs.SKP_Silk_decoder_set_fs( psDec, (int)(frameRate/1000) );
             if( psDec.sRC.error !=0 ) {
                 psDec.nBytesLeft = 0;
 
                 action              = 1; /* PLC operation */
                 /* revert fs if changed in decode_parameters */
+                DecoderSetFs.SKP_Silk_decoder_set_fs( psDec, fs_Khz_old );
                 /* Avoid crashing */
                 decBytes[0] = psDec.sRC.bufferLength;
 

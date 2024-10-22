@@ -121,7 +121,7 @@ public class DeviceConfiguration
     /**
      * The property we use to store the settings for video codec bitrate.
      */
-    private static final String PROP_VIDEO_BITRATE
+    static final String PROP_VIDEO_BITRATE
         = "net.java.sip.communicator.impl.neomedia.video.bitrate";
 
     /**
@@ -134,26 +134,26 @@ public class DeviceConfiguration
     /**
      * The property we use to store the video framerate settings.
      */
-    private static final String PROP_VIDEO_FRAMERATE
+    static final String PROP_VIDEO_FRAMERATE
         = "net.java.sip.communicator.impl.neomedia.video.framerate";
 
     /**
      * The name of the property which specifies the height of the video.
      */
-    private static final String PROP_VIDEO_HEIGHT
+    static final String PROP_VIDEO_HEIGHT
         = "net.java.sip.communicator.impl.neomedia.video.height";
 
     /**
      * The property we use to store the settings for maximum allowed video
      * bandwidth (used to normalize RTP traffic, and not in codec configuration)
      */
-    private static final String PROP_VIDEO_RTP_PACING_THRESHOLD
+    static final String PROP_VIDEO_RTP_PACING_THRESHOLD
         = "net.java.sip.communicator.impl.neomedia.video.maxbandwidth";
 
     /**
      * The name of the property which specifies the width of the video.
      */
-    private static final String PROP_VIDEO_WIDTH
+    static final String PROP_VIDEO_WIDTH
         = "net.java.sip.communicator.impl.neomedia.video.width";
 
     /**

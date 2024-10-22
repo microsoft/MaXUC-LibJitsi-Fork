@@ -201,7 +201,7 @@ public class FileAccessServiceImpl implements FileAccessService
         String fullPath = getFullPath(dirName);
         File dir = new File(fullPath, dirName);
 
-        if (dir.exists())
+        if (dir.exists()) // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
         {
             if (!dir.isDirectory())
             {
@@ -342,7 +342,7 @@ public class FileAccessServiceImpl implements FileAccessService
 
             File homedirFile = new File(homedir);
 
-            if (!homedirFile.exists())
+            if (!homedirFile.exists()) // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
             {
                 logger.debug("Creating home directory : "
                         + homedirFile.getName());
@@ -362,7 +362,7 @@ public class FileAccessServiceImpl implements FileAccessService
                 file = null;
             }
 
-            if(file != null && !file.getParentFile().exists())
+            if(file != null && !file.getParentFile().exists()) // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
             {
                 if (!file.getParentFile().mkdirs())
                 {

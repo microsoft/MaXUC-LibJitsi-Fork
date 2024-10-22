@@ -14,11 +14,19 @@ public final class ThreadUtils
     }
 
     /**
-     * Creates a new Thread and starts it immediately.
+     * Starts a thread from an argument.
      */
     public static void startThread(Thread thread)
     {
         thread.start();
+    }
+
+    /**
+     * Creates a new Thread and starts it immediately.
+     */
+    public static void createAndStartThread(Runnable runnable, String name)
+    {
+        new Thread(runnable, name).start();
     }
 
     /**
@@ -30,11 +38,44 @@ public final class ThreadUtils
     }
 
     /**
-     * Calls notifyAll() on the passed lock.
+     * Just a proxy method to call .wait on the object, so we can mock it in tests.
+     *
+     * @param object object on which .wait() is called.
+     */
+    public static void wait(Object object) throws InterruptedException
+    {
+        object.wait();
+    }
+
+    /**
+     * Just a proxy method to call .wait(timeoutMillis) on the object, so we can mock it in tests.
+     *
+     * @param object object on which .wait(timeoutMillis) is called.
+     * @param timeoutMillis the maximum time to wait, in milliseconds.
+     */
+    public static void wait(Object object, long timeoutMillis) throws InterruptedException
+    {
+        object.wait(timeoutMillis);
+    }
+
+    /**
+     * Just a proxy method to call .notifyAll on the object, so we can mock it in tests.
+     *
+     * @param lock object on which .notifyAll() is called.
      */
     public static void notifyAll(Object lock)
     {
         lock.notifyAll();
+    }
+
+    /**
+     * Just a proxy method to call .notify on the object, so we can mock it in tests.
+     *
+     * @param object object on which .notify() is called.
+     */
+    public static void notify(Object object)
+    {
+        object.notify();
     }
 
     /**

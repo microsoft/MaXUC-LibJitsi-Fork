@@ -160,11 +160,6 @@ public class JavaDecoder
     private final short[] outputLength = new short[1];
 
     /**
-     * The sample rate for this SILK stream
-     */
-    private double sampleRate;
-
-    /**
      * To avoid GC churn, we only allocate memory once per thread.
      */
     private DecodeMem mDecodeMem;
@@ -214,8 +209,8 @@ public class JavaDecoder
         logger.debug("Opening SILK decoder with format: " + inputFormat);
         inputFormats = new AudioFormat[] {inputFormat};
 
-        sampleRate = inputFormat.getSampleRate();
-        logger.info("Setting sample rate to " + sampleRate);
+        double sampleRate = inputFormat.getSampleRate();
+        logger.info("Sample rate is " + sampleRate);
         int channels = inputFormat.getChannels();
 
         decControl = new SKP_SILK_SDK_DecControlStruct();
@@ -281,8 +276,7 @@ public class JavaDecoder
                 int rc = DecAPI.SKP_Silk_SDK_Decode(
                         decState, decControl, 0,
                         lbrrData, 0, lbrrBytes[0],
-                        out, outOffset, outputLength, sampleRate,
-                        mDecodeMem);
+                        out, outOffset, outputLength, mDecodeMem);
 
                 if(rc == 0)
                 {
@@ -327,8 +321,7 @@ public class JavaDecoder
                     decState, decControl,
                     lostFlag,
                     in, inOffset, inLength,
-                    out, outOffset, outputLength, sampleRate,
-                    mDecodeMem);
+                    out, outOffset, outputLength, mDecodeMem);
             if (rc == 0)
             {
                 outBuffer.setDuration(FRAME_DURATION * 1000000);

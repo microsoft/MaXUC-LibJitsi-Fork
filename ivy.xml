@@ -1,7 +1,7 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
 <!-- This file describes every dependency that we need to download to build libjitsi. -->
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra" >
-    <info organisation="Metaswitch" module="Main" />
+    <info organisation="maxucclients" module="Main" />
     <configurations>
         <!-- Dependencies needing ivy:retrieve to specific download locations -->
         <conf name="buildtools" /> <!-- buildtools configuration downloads to buildtools folder. -->
@@ -38,7 +38,7 @@
             <!-- Provides osgi.core.jar in libjitsi/lib -->
         </dependency>
 
-        <dependency name="fmj" rev="1.0.6" conf="runtime,lib->default" >
+        <dependency name="fmj" rev="1.0.8" conf="runtime,lib->default" >
             <!-- Provides fmj.jar in libjitsi/lib -->
         </dependency>
 
@@ -51,7 +51,7 @@
             <artifact name="jain-sip-ri" type="jar" ext="jar"/>
         </dependency>
 
-        <dependency org="org.bouncycastle" name="bcpkix-jdk18on" rev="1.77" conf="runtime,lib->default" >
+        <dependency org="org.bouncycastle" name="bcpkix-jdk18on" rev="1.78.1" conf="runtime,lib->default" >
             <!-- Provides bcpkix-jdk18on.jar and transitive dependency bcprov-jdk18on.jar in libjitsi/lib -->
         </dependency>
 
@@ -90,23 +90,32 @@
 
         <!-- Built externally from sources https://github.com/xiph/speex/releases -->
         <dependency name="libspeex-x86_64" rev="1.2.1" conf="nativewindows->default">
-            <artifact name="libspeex" type="native" ext="a" />
+            <artifact e:basename="libspeex" name="libspeex-x86_64" type="native" ext="a"/>
+        </dependency>
+        <dependency name="libspeex-mac" rev="1.2.1" conf="nativemac->default">
+            <artifact e:basename="libspeex" name="libspeex-mac" type="native" ext="a"/>
         </dependency>
 
         <!-- Built externally from sources https://github.com/xiph/speexdsp/releases -->
         <dependency name="libspeexdsp-x86_64" rev="1.2.1" conf="nativewindows->default">
-            <artifact name="libspeexdsp" type="native" ext="a" />
+            <artifact e:basename="libspeexdsp"  name="libspeexdsp-x86_64" type="native" ext="a" />
+        </dependency>
+        <dependency name="libspeexdsp-mac" rev="1.2.1" conf="nativemac->default">
+            <artifact e:basename="libspeexdsp"  name="libspeexdsp-mac" type="native" ext="a" />
         </dependency>
 
         <!-- Built externally from sources https://opus-codec.org/downloads/ -->
         <dependency name="libopus-x86_64" rev="1.3.1" conf="nativewindows->default">
-            <artifact name="libopus" type="native" ext="a" />
+            <artifact e:basename="libopus" name="libopus-x86_64" type="native" ext="a" />
+        </dependency>
+        <dependency name="libopus-mac" rev="1.3.1" conf="nativemac->default">
+            <artifact e:basename="libopus" name="libopus-mac" type="native" ext="a" />
         </dependency>
 
         <!-- Built by jitsi/src/native/build.xml target "webrtc-aec" -->
-        <dependency name="libjnwebrtc" rev="1.0" conf="nativemac->default">
-            <artifact name="libjnwebrtcaec" type="native" ext="a" />
-            <artifact name="libjnwebrtc" type="native" ext="a" />
+        <dependency name="libjnwebrtc" rev="1.1" conf="nativemac->default">
+            <artifact e:basename="libjnwebrtcaec" e:classifier="libjnwebrtcaec" name="libjnwebrtc" type="native" ext="a" />
+            <artifact e:basename="libjnwebrtc" name="libjnwebrtc" type="native" ext="a" />
         </dependency>
     </dependencies>
 </ivy-module>

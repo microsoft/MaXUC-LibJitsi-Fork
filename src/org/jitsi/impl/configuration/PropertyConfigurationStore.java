@@ -63,7 +63,7 @@ public class PropertyConfigurationStore
     {
         properties.clear();
 
-        try (InputStream in = new BufferedInputStream(new FileInputStream(file)))
+        try (InputStream in = new BufferedInputStream(new FileInputStream(file))) // CodeQL [SM00697] Not Exploitable. The file/path is not user provided.
         {
             properties.load(in);
 

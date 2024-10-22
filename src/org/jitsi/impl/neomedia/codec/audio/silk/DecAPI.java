@@ -57,7 +57,6 @@ public class DecAPI
             short[]                              samplesOut,    /* O:   Decoded output speech vector                    */
             int                                  samplesOut_offset,
             short[]                              nSamplesOut,    /* I/O: Number of samples (vector/decoded)              */
-            double                               sampleRate,
             final DecodeMem                      mem
     )
     {
@@ -88,7 +87,7 @@ public class DecAPI
         /* Call decoder for one frame */
         mem.SKP_Silk_SDK_Decode__tmp_int[0] = 0;
         ret += DecodeFrame.SKP_Silk_decode_frame( psDec, samplesOut, samplesOut_offset, nSamplesOut, inData, inData_offset,
-                nBytesIn, lostFlag, mem.SKP_Silk_SDK_Decode__tmp_int, sampleRate, mem);
+                nBytesIn, lostFlag, mem.SKP_Silk_SDK_Decode__tmp_int, mem);
         used_bytes = mem.SKP_Silk_SDK_Decode__tmp_int[0];
 
         if( used_bytes !=0) /* Only Call if not a packet loss */

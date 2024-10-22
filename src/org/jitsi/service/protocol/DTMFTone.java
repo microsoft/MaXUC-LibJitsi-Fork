@@ -6,6 +6,8 @@
  */
 package org.jitsi.service.protocol;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * Class for representing all the different DTMF tones.
  *
@@ -104,7 +106,8 @@ public final class DTMFTone
      *
      * @param value one of te DTMF_XXX fields, indicating the value of the tone.
      */
-    private DTMFTone(String value)
+    @VisibleForTesting
+    public DTMFTone(String value)
     {
         this.value = value;
     }

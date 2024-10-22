@@ -15,6 +15,8 @@ import javax.media.Buffer;
 import javax.media.format.*;
 import javax.media.protocol.*;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.jitsi.service.neomedia.*;
 // disambiguation.
 // disambiguation.
@@ -274,7 +276,8 @@ public class RewritablePushBufferDataSource
      * Implements a <tt>PushBufferStream</tt> wrapper which provides mute
      * support for the wrapped instance.
      */
-    private class MutePushBufferStream
+    @VisibleForTesting
+    public class MutePushBufferStream
         extends SourceStreamDelegate<PushBufferStream>
         implements PushBufferStream
     {

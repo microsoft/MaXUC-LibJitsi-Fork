@@ -7,6 +7,7 @@
 package org.jitsi.impl.neomedia.codec.audio.silk;
 
 import java.util.*;
+import org.jitsi.util.Logger;
 
 /**
  * Core decoder. Performs inverse NSQ operation LTP + LPC
@@ -16,6 +17,7 @@ import java.util.*;
  */
 public class DecodeCore
 {
+    private static final Logger logger = Logger.getLogger(DecodeCore.class);
     /**
      * Core decoder. Performs inverse NSQ operation LTP + LPC.
      * @param psDec Decoder state.
@@ -236,6 +238,13 @@ public class DecodeCore
         }
 
         /* Copy to output */
-        System.arraycopy(psDec.outBuf, psDec.frame_length, xq, xq_offset+0, psDec.frame_length);
+        try {
+            System.arraycopy(psDec.outBuf, psDec.frame_length, xq, xq_offset+0, psDec.frame_length);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            logger.error("Error copying into output buffer");
+            logger.error("Decoder state: frame length: " + psDec.frame_length + " fs_kHz: " + psDec.fs_kHz + " prev_API_sampleRate: " +
+                         psDec.prev_API_sampleRate + " nFramesDecoded: " + psDec.nFramesDecoded + " nFramesInPacket: " + psDec.nFramesInPacket);
+            throw ex;
+        }
     }
 }

@@ -11,6 +11,8 @@ import java.util.*;
 
 import javax.media.*;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.jitsi.impl.neomedia.*;
 import org.jitsi.impl.neomedia.transform.*;
 import org.jitsi.service.neomedia.*;
@@ -81,6 +83,11 @@ public class DtmfTransformEngine
      * The dispatcher that is delivering tones to the media steam.
      */
     private DTMFDispatcher dtmfDispatcher = null;
+
+    public void setDtmfDispatcher(DTMFDispatcher dtmfDispatcher)
+    {
+        this.dtmfDispatcher = dtmfDispatcher;
+    }
 
     /**
      * The status that this engine is currently in.
@@ -491,7 +498,8 @@ public class DtmfTransformEngine
      * associated with this engine. The reason we need to do this in a separate
      * thread is of course the time sensitive nature of incoming RTP packets.
      */
-    private class DTMFDispatcher
+    @VisibleForTesting
+    class DTMFDispatcher
         implements Runnable
     {
         /** Indicates whether this thread is supposed to be running */

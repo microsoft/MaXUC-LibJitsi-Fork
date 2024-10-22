@@ -31,7 +31,7 @@ public class DecodeParameters
             final DecodeMem             mem
         )
     {
-        int   i, k, Ix, nBytesUsed;
+        int   i, k, Ix, fs_kHz_dec, nBytesUsed;
         int[] Ix_ptr = mem.zero(mem.SKP_Silk_decode_parameters__Ix_ptr);
         int[]   Ixs = mem.zero(mem.SKP_Silk_decode_parameters__Ixs);
         int[]   GainsIndices = mem.zero(mem.SKP_Silk_decode_parameters__GainsIndices);
@@ -56,6 +56,8 @@ public class DecodeParameters
                 psRC.error = Define.RANGE_CODER_ILLEGAL_SAMPLING_RATE;
                 return;
             }
+            fs_kHz_dec = TablesOther.SKP_Silk_SamplingRates_table[ Ix ];
+            DecoderSetFs.SKP_Silk_decoder_set_fs( psDec, fs_kHz_dec );
         }
 
         /*******************************************/

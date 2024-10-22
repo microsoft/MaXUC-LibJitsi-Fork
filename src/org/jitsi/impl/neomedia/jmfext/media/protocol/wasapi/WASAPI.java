@@ -143,7 +143,7 @@ public class WASAPI
 
     static
     {
-        System.loadLibrary("jnwasapi");
+        LoadNativeLib.loadNativeLib();
 
         AUDCLNT_E_NOT_STOPPED
             = MAKE_HRESULT(SEVERITY_ERROR, FACILIY_AUDCLNT, 5);
@@ -487,6 +487,16 @@ public class WASAPI
 
     public static native int WAVEFORMATEX_sizeof();
 
-    /** Prevents the initialization of <tt>WASAPI</tt> instances. */
+    /**
+     * Prevents the initialization of <tt>WASAPI</tt> instances.
+     */
     private WASAPI() {}
+
+    static class LoadNativeLib
+    {
+        public static void loadNativeLib()
+        {
+            System.loadLibrary("jnwasapi");
+        }
+    }
 }
